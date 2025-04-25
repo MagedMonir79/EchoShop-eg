@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل مستخدم جديد - EchoShop</title>
+  <script type="module">
+    // Import Firebase SDKs
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+    apiKey: "AIzaSyAgaL-V6YpIc2dTTD1NRddwkPIekqKmg34",
+    authDomain: "echoshop-eg.firebaseapp.com",
+    projectId: "echoshop-eg",
+    storageBucket: "echoshop-eg.firebasestorage.app",
+    messagingSenderId: "465141010854",
+    appId: "1:465141010854:web:0937140429a97bda0dff67"
+  };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Handle form submission
+    window.handleSignup = async (event) => {
+      event.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const messageDiv = document.getElementById('message');
+
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        messageDiv.textContent = 'تم التسجيل بنجاح!';
+        messageDiv.className = 'message success';
+      } catch (error) {
+        messageDiv.textContent = `خطأ: ${error.message}`;
+        messageDiv.className = 'message error';
+      }
+    };
+  </script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f4f4f9;
+    }
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .message {
+      text-align: center;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    .error {
+      color: red;
+    }
+    .success {
+      color: green;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>تسجيل مستخدم جديد</h1>
+    <form onsubmit="handleSignup(event)">
+      <label for="email">الإيميل:</label>
+      <input type="email" id="email" placeholder="أدخل الإيميل" required>
+      <label for="password">كلمة المرور:</label>
+      <input type="password" id="password" placeholder="أدخل كلمة المرور" required>
+      <button type="submit">سجل الآن</button>
+    </form>
+    <div id="message" class="message"></div>
+  </div>
+
+</body>
+</html>

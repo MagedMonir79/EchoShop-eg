@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة التحكم - EchoShop</title>
+  <link rel="stylesheet" href="dashboard-style.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #0f172a, #1e293b);
+      color: white;
+    }
+
+    header {
+      background-color: #020617;
+      padding: 15px 0;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #a3e635;
+      text-decoration: none;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    nav a {
+      background-color: #2563eb;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: background-color 0.3s;
+    }
+
+    nav a:hover {
+      background-color: #1d4ed8;
+    }
+
+    .dashboard {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background-color: #1e293b;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    .card h2 {
+      margin: 0;
+      color: #a3e635;
+      font-size: 2rem;
+    }
+
+    .card p {
+      margin-top: 10px;
+      font-size: 1rem;
+      color: #e0f2fe;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #1e293b;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: center;
+      border-bottom: 1px solid #334155;
+    }
+
+    th {
+      background-color: #0f172a;
+      color: #60a5fa;
+    }
+
+    tr:hover {
+      background-color: #334155;
+    }
+
+    h1 {
+      text-align: center;
+      color: #3b82f6;
+      margin-bottom: 30px;
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <a href="index.html" class="logo">EchoShop</a>
+      <nav>
+        <a href="index.html">الرئيسية</a>
+        <a href="products.html">المنتجات</a>
+        <a href="dashboard.html">لوحة التحكم</a>
+        <a href="orders.html">الطلبات</a>
+        <a href="settings.html">الإعدادات</a>
+        <a href="contact.html">تواصل معنا</a>
+        <a href="about.html">من نحن</a>
+        <a href="privacy.html">سياسة الخصوصية</a>
+        <a href="register.html">تسجيل تاجر</a>
+        <a href="add-product.html">إضافة منتج</a>
+        <a href="login.html">تسجيل الدخول</a>
+        <a href="signup.html">إنشاء حساب</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="dashboard">
+    <h1>لوحة التحكم</h1>
+
+    <div class="stats">
+      <div class="card">
+        <h2>120</h2>
+        <p>عدد الطلبات</p>
+      </div>
+      <div class="card">
+        <h2>85</h2>
+        <p>عدد المنتجات</p>
+      </div>
+      <div class="card">
+        <h2>45</h2>
+        <p>عدد العملاء</p>
+      </div>
+      <div class="card">
+        <h2>5000 ج</h2>
+        <p>أرباح اليوم</p>
+      </div>
+    </div>
+
+    <h2 style="text-align: center; color: #38bdf8;">أحدث الطلبات</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>رقم الطلب</th>
+          <th>العميل</th>
+          <th>المنتج</th>
+          <th>السعر</th>
+          <th>الحالة</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>#1001</td>
+          <td>أحمد علي</td>
+          <td>سماعة بلوتوث</td>
+          <td>250 ج</td>
+          <td>قيد التوصيل</td>
+        </tr>
+        <tr>
+          <td>#1002</td>
+          <td>ليلى سمير</td>
+          <td>كابل USB</td>
+          <td>75 ج</td>
+          <td>تم التوصيل</td>
+        </tr>
+        <tr>
+          <td>#1003</td>
+          <td>كريم نادر</td>
+          <td>باور بانك</td>
+          <td>400 ج</td>
+          <td>بانتظار الشحن</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

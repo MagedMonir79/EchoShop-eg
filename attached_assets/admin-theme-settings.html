@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Theme Settings - EchoShop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #0f172a;
+      color: white;
+      padding: 2rem;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    header h1 { color: #a3e635; }
+    .btn {
+      padding: 0.5rem 1.2rem;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+    .logout-btn { background: #ef4444; color: white; }
+    .back-btn { background: #22c55e; color: black; }
+    section {
+      background-color: #1e293b;
+      padding: 2rem;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+    }
+    section h2 {
+      margin-bottom: 1rem;
+      color: #38bdf8;
+    }
+    label {
+      display: block;
+      margin: 1rem 0 0.3rem;
+    }
+    input[type="color"], input[type="file"], input[type="number"], input[type="password"], select {
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: none;
+      margin-bottom: 1rem;
+      width: 100%;
+    }
+    .color-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .color-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .submit-btn {
+      background: #3b82f6;
+      color: white;
+      padding: 0.7rem 2rem;
+      font-weight: bold;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    .submit-btn:hover { background: #2563eb; }
+  </style>
+</head>
+<body>
+  <header>
+    <button class="btn logout-btn" onclick="logout()">Logout</button>
+    <h1>Admin Theme Settings - EchoShop</h1>
+    <button class="btn back-btn" onclick="history.back()">Back</button>
+  </header>
+
+  <section>
+    <h2>🎨 Theme Colors</h2>
+    <div class="color-row">
+      <div class="color-box">
+        <label for="mainBg">Main Background</label>
+        <input type="color" id="mainBg">
+      </div>
+      <div class="color-box">
+        <label for="primary">Primary Accent</label>
+        <input type="color" id="primary">
+      </div>
+      <div class="color-box">
+        <label for="secondary">Secondary Accent</label>
+        <input type="color" id="secondary">
+      </div>
+      <div class="color-box">
+        <label for="headerColor">Header Color</label>
+        <input type="color" id="headerColor">
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>🖼️ Banners & Logos</h2>
+    <label>Upload Logo</label>
+    <input type="file">
+    <label>Upload Main Banner</label>
+    <input type="file">
+    <label>Upload Promo Banner</label>
+    <input type="file">
+    <label>Number of Promo Banners</label>
+    <input type="number" min="1" max="10" value="3">
+  </section>
+
+  <section>
+    <h2>🔤 Fonts</h2>
+    <label>Header Font</label>
+    <select>
+      <option>Roboto</option>
+      <option>Arial</option>
+      <option>Tahoma</option>
+      <option>Georgia</option>
+    </select>
+    <label>Body Font</label>
+    <select>
+      <option>Roboto</option>
+      <option>Arial</option>
+      <option>Tahoma</option>
+      <option>Georgia</option>
+    </select>
+  </section>
+
+  <section>
+    <h2>🔒 Password Settings</h2>
+    <label>Enter Old Password</label>
+    <input type="password" id="oldPass" oninput="revealTemp('oldPass')">
+
+    <label>New Password</label>
+    <input type="password" id="newPass" onfocus="hidePass('oldPass')">
+
+    <label>Confirm New Password</label>
+    <input type="password" id="confirmPass">
+  </section>
+
+  <section>
+    <h2>⚙️ General Options</h2>
+    <label><input type="checkbox"> Enable Notifications</label>
+    <label><input type="checkbox"> Maintenance Mode</label>
+    <label>Session Timeout (mins)</label>
+    <input type="number" value="5">
+  </section>
+
+  <section style="text-align:center">
+    <button class="submit-btn">💾 Save Settings</button>
+    <button class="submit-btn" style="background:#ef4444;margin-left:1rem">Reset to Default</button>
+  </section>
+
+  <script>
+    function logout() {
+      alert("Logged out!");
+      location.href = "index.html";
+    }
+    function revealTemp(id) {
+      document.getElementById(id).type = "text";
+    }
+    function hidePass(id) {
+      document.getElementById(id).type = "password";
+    }
+  </script>
+</body>
+</html>
