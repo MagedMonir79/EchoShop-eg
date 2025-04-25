@@ -198,7 +198,7 @@ export default function AdminProducts() {
   });
   
   // Reset form when selectedProduct changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (isFormDialogOpen) {
       form.reset({
         title: selectedProduct?.title || "",
@@ -620,7 +620,6 @@ export default function AdminProducts() {
                   type="button" 
                   variant="outline"
                   onClick={() => setIsFormDialogOpen(false)}
-                  className="mr-2"
                 >
                   {t("cancel")}
                 </Button>
@@ -646,7 +645,7 @@ export default function AdminProducts() {
           <DialogHeader>
             <DialogTitle>{t("confirmDelete")}</DialogTitle>
             <DialogDescription>
-              {t("deleteProductConfirmation", { product: selectedProduct?.title })}
+              {selectedProduct ? `${t("deleteProductConfirmation")} ${selectedProduct.title}?` : t("confirmDeleteQuestion")}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

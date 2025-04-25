@@ -13,8 +13,10 @@ import Login from "@/pages/login";
 import Signup from "@/pages/signup";
 import Products from "@/pages/products";
 import Cart from "@/pages/cart";
+
+// Admin Pages
 import AdminDashboard from "@/pages/admin/dashboard";
-import AdminThemeSettings from "@/pages/admin/theme-settings";
+import AdminProducts from "@/pages/admin/products";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -25,8 +27,10 @@ function Router() {
       <Route path="/signup" component={Signup} />
       <Route path="/products" component={Products} />
       <Route path="/cart" component={Cart} />
+      
+      {/* Admin Routes */}
       <Route path="/admin/dashboard" component={AdminDashboard} />
-      <Route path="/admin/theme-settings" component={AdminThemeSettings} />
+      <Route path="/admin/products" component={AdminProducts} />
       
       {/* Fallback to 404 */}
       <Route component={NotFound} />
