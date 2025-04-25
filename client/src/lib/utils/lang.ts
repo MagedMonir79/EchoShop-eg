@@ -259,9 +259,9 @@ export const translations: Translations = {
     "forgotPassword": "نسيت كلمة المرور؟",
     "fullName": "الاسم الكامل",
     "username": "اسم المستخدم",
-    "signupTitle": "إنشاء حساب",
-    "orContinueWith": "أو استمر باستخدام",
-    "continueWithGoogle": "متابعة باستخدام جوجل",
+    "signupTitle": "إنشاء حساب جديد",
+    "orContinueWith": "أو المتابعة باستخدام",
+    "continueWithGoogle": "المتابعة باستخدام Google",
     
     // Miscellaneous
     "loading": "جاري التحميل...",
