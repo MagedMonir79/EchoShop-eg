@@ -14,23 +14,25 @@ export default function HeroBanner() {
           <h1 className="text-4xl md:text-5xl font-bold mb-4">{t("heroTitle")}</h1>
           <p className="text-gray-300 text-lg mb-6">{t("heroDescription")}</p>
           <div className="flex gap-4 flex-wrap">
-            <Link href="/products">
-              <Button 
-                className="bg-primary text-black px-6 py-3 rounded-full font-bold shadow-lg hover:shadow-xl transition-shadow duration-300 hover:bg-lime-500 flex items-center gap-2"
-              >
+            <Button 
+              className="bg-primary text-black px-6 py-3 rounded-full font-bold shadow-lg hover:shadow-xl transition-shadow duration-300 hover:bg-lime-500 flex items-center gap-2"
+              asChild
+            >
+              <Link href="/products">
                 <ShoppingCart className="h-5 w-5" />
                 {t("shopNow")}
-              </Button>
-            </Link>
-            <Link href="/about">
-              <Button 
-                variant="outline"
-                className="bg-transparent border-2 border-white text-white px-6 py-3 rounded-full font-bold hover:bg-white hover:text-darkBlue transition-colors duration-300 flex items-center gap-2"
-              >
+              </Link>
+            </Button>
+            <Button 
+              variant="outline"
+              className="bg-transparent border-2 border-white text-white px-6 py-3 rounded-full font-bold hover:bg-white hover:text-darkBlue transition-colors duration-300 flex items-center gap-2"
+              asChild
+            >
+              <Link href="/about">
                 <Info className="h-5 w-5" />
                 {t("learnMore")}
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </div>
         </div>
         <div className="md:w-1/2 relative">
