@@ -48,32 +48,41 @@ export const createTestUserIfNotExists = async () => {
     const testPassword = "123456";
     
     try {
-      // Try to sign in with test credentials
-      await signInWithEmailAndPassword(auth, testEmail, testPassword);
-      console.log("Test user already exists");
+      // Check if test user exists by querying Firestore directly
+      const usersCollectionRef = collection(db, "users");
+      const q = query(usersCollectionRef, where("email", "==", testEmail));
+      const querySnapshot = await getDocs(q);
+      
+      if (!querySnapshot.empty) {
+        console.log("Test user already exists");
+        return;
+      }
+      
+      // User doesn't exist, create it
+      const userCredential = await createUserWithEmailAndPassword(auth, testEmail, testPassword);
+      await updateProfile(userCredential.user, { displayName: "مستخدم اختبار" });
+      
+      // Store additional user data in Firestore
+      await setDoc(doc(db, "users", userCredential.user.uid), {
+        username: "مستخدم اختبار",
+        email: testEmail,
+        role: "customer",
+        createdAt: new Date(),
+        settings: {}
+      });
+      
+      console.log("Test user created successfully");
+      
+      // Sign out to not affect current session
+      await signOut(auth);
     } catch (error: any) {
-      // If user doesn't exist, create it
-      if (error.code === "auth/user-not-found") {
-        const userCredential = await createUserWithEmailAndPassword(auth, testEmail, testPassword);
-        await updateProfile(userCredential.user, { displayName: "مستخدم اختبار" });
-        
-        // Store additional user data in Firestore
-        await setDoc(doc(db, "users", userCredential.user.uid), {
-          username: "مستخدم اختبار",
-          email: testEmail,
-          role: "customer",
-          createdAt: new Date(),
-          settings: {}
-        });
-        
-        console.log("Test user created successfully");
+      // Firebase might throw an error if the user already exists
+      if (error.code === "auth/email-already-in-use") {
+        console.log("Test user already exists (from Firebase error)");
       } else {
         console.error("Error checking test user:", error);
       }
     }
-    
-    // Sign out to not affect current session
-    await signOut(auth);
   } catch (error) {
     console.error("Error creating test user:", error);
   }
