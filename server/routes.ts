@@ -1,291 +1,843 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { z } from "zod";
+import { 
+  insertUserSchema, insertProductSchema, insertCategorySchema, 
+  insertSupplierSchema, insertOrderSchema, insertOrderItemSchema,
+  insertCartSchema, insertCartItemSchema
+} from "@shared/schema";
+
+// Middleware to check authentication and admin role
+const adminMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+  // In a real implementation, this would check user session or token
+  // and verify admin role. For now, we'll skip this.
+  next();
+};
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // API routes for products
+  // Auth endpoints
+  app.post("/api/auth/register", async (req, res) => {
+    try {
+      const result = insertUserSchema.safeParse(req.body);
+      
+      if (!result.success) {
+        return res.status(400).json({ error: "Invalid user data", details: result.error.format() });
+      }
+      
+      const { email, username } = result.data;
+      
+      // Check if username already exists
+      const existingUsername = await storage.getUserByUsername(username);
+      if (existingUsername) {
+        return res.status(400).json({ error: "Username already exists" });
+      }
+      
+      // Check if email already exists
+      const existingEmail = await storage.getUserByEmail(email);
+      if (existingEmail) {
+        return res.status(400).json({ error: "Email already exists" });
+      }
+      
+      const user = await storage.createUser(result.data);
+      
+      // Omit password from response
+      const { password, ...userWithoutPassword } = user;
+      
+      res.status(201).json(userWithoutPassword);
+    } catch (error) {
+      console.error("Registration error:", error);
+      res.status(500).json({ error: "Registration failed" });
+    }
+  });
+  
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      if (!username || !password) {
+        return res.status(400).json({ error: "Username and password are required" });
+      }
+      
+      // Check if user exists
+      const user = await storage.getUserByUsername(username);
+      if (!user) {
+        return res.status(401).json({ error: "Invalid username or password" });
+      }
+      
+      // Check password
+      if (user.password !== password) {
+        return res.status(401).json({ error: "Invalid username or password" });
+      }
+      
+      // Omit password from response
+      const { password: _, ...userWithoutPassword } = user;
+      
+      res.json(userWithoutPassword);
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).json({ error: "Login failed" });
+    }
+  });
+
+  // Products endpoints
   app.get("/api/products", async (req, res) => {
     try {
-      // In a real implementation, this would fetch from a database
-      // For now, we'll return a mock response
-      const products = [
-        {
-          id: 1,
-          title: "Wireless Headphones",
-          titleAr: "سماعات لاسلكية",
-          description: "High-quality wireless headphones with noise cancellation",
-          descriptionAr: "سماعات لاسلكية عالية الجودة مع إلغاء الضوضاء",
-          price: "99.99",
-          discountedPrice: "59.99",
-          imageUrl: "https://images.unsplash.com/photo-1600080972464-8e5f35f63d08?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-          categoryId: 1,
-          sellerId: 1,
-          supplierId: 1,
-          inventory: 50,
-          rating: "4.8",
-          reviewCount: 120,
-          isActive: true
-        },
-        {
-          id: 2,
-          title: "Smart Watch Series 6",
-          titleAr: "ساعة ذكية سلسلة 6",
-          description: "Latest smart watch with health monitoring features",
-          descriptionAr: "أحدث ساعة ذكية مع ميزات مراقبة الصحة",
-          price: "299.99",
-          discountedPrice: "195.99",
-          imageUrl: "https://images.unsplash.com/photo-1591370874773-6702dcc9c22c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-          categoryId: 1,
-          sellerId: 2,
-          supplierId: 2,
-          inventory: 25,
-          rating: "4.9",
-          reviewCount: 85,
-          isActive: true
-        },
-        {
-          id: 3,
-          title: "4K Streaming Camera",
-          titleAr: "كاميرا بث 4K",
-          description: "Ultra HD streaming camera for professional video calls",
-          descriptionAr: "كاميرا بث فائقة الدقة لمكالمات الفيديو الاحترافية",
-          price: "129.99",
-          discountedPrice: "64.99",
-          imageUrl: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-          categoryId: 1,
-          sellerId: 1,
-          supplierId: 3,
-          inventory: 40,
-          rating: "4.7",
-          reviewCount: 65,
-          isActive: true
-        },
-        {
-          id: 4,
-          title: "Gaming Controller PRO",
-          titleAr: "وحدة تحكم الألعاب برو",
-          description: "Professional gaming controller with customizable buttons",
-          descriptionAr: "وحدة تحكم احترافية للألعاب مع أزرار قابلة للتخصيص",
-          price: "79.99",
-          discountedPrice: "59.99",
-          imageUrl: "https://images.unsplash.com/photo-1600186279172-fddCC51dADRe?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-          categoryId: 1,
-          sellerId: 3,
-          supplierId: 1,
-          inventory: 60,
-          rating: "4.5",
-          reviewCount: 95,
-          isActive: true
-        }
-      ];
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 100;
+      const offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
+      const categoryId = req.query.categoryId ? parseInt(req.query.categoryId as string) : undefined;
+      const search = req.query.search as string | undefined;
+      
+      let products;
+      
+      if (categoryId) {
+        products = await storage.getProductsByCategory(categoryId, limit, offset);
+      } else if (search) {
+        products = await storage.searchProducts(search, limit, offset);
+      } else {
+        products = await storage.getAllProducts(limit, offset);
+      }
       
       res.json(products);
     } catch (error) {
+      console.error("Fetch products error:", error);
       res.status(500).json({ error: "Failed to fetch products" });
     }
   });
 
-  // API route for getting a single product
   app.get("/api/products/:id", async (req, res) => {
     try {
       const productId = parseInt(req.params.id);
-      // In a real implementation, this would fetch from a database
-      // For now, we'll return a mock response
-      res.json({
-        id: productId,
-        title: "Wireless Headphones",
-        titleAr: "سماعات لاسلكية",
-        description: "High-quality wireless headphones with noise cancellation",
-        descriptionAr: "سماعات لاسلكية عالية الجودة مع إلغاء الضوضاء",
-        price: "99.99",
-        discountedPrice: "59.99",
-        imageUrl: "https://images.unsplash.com/photo-1600080972464-8e5f35f63d08?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-        categoryId: 1,
-        sellerId: 1,
-        supplierId: 1,
-        inventory: 50,
-        rating: "4.8",
-        reviewCount: 120,
-        isActive: true
-      });
+      
+      if (isNaN(productId)) {
+        return res.status(400).json({ error: "Invalid product ID" });
+      }
+      
+      const product = await storage.getProduct(productId);
+      
+      if (!product) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+      
+      res.json(product);
     } catch (error) {
+      console.error("Fetch product error:", error);
       res.status(500).json({ error: "Failed to fetch product" });
     }
   });
-
-  // API routes for categories
-  app.get("/api/categories", async (req, res) => {
+  
+  app.post("/api/products", adminMiddleware, async (req, res) => {
     try {
-      // In a real implementation, this would fetch from a database
-      // For now, we'll return a mock response
-      const categories = [
-        { id: 1, name: "electronics", nameAr: "الإلكترونيات", imageUrl: "https://example.com/electronics.jpg" },
-        { id: 2, name: "fashion", nameAr: "الأزياء", imageUrl: "https://example.com/fashion.jpg" },
-        { id: 3, name: "home", nameAr: "المنزل", imageUrl: "https://example.com/home.jpg" },
-        { id: 4, name: "beauty", nameAr: "الجمال", imageUrl: "https://example.com/beauty.jpg" },
-        { id: 5, name: "sports", nameAr: "الرياضة", imageUrl: "https://example.com/sports.jpg" },
-        { id: 6, name: "toys", nameAr: "الألعاب", imageUrl: "https://example.com/toys.jpg" }
-      ];
+      const result = insertProductSchema.safeParse(req.body);
       
-      res.json(categories);
+      if (!result.success) {
+        return res.status(400).json({ error: "Invalid product data", details: result.error.format() });
+      }
+      
+      const product = await storage.createProduct(result.data);
+      
+      res.status(201).json(product);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch categories" });
+      console.error("Create product error:", error);
+      res.status(500).json({ error: "Failed to create product" });
+    }
+  });
+  
+  app.put("/api/products/:id", adminMiddleware, async (req, res) => {
+    try {
+      const productId = parseInt(req.params.id);
+      
+      if (isNaN(productId)) {
+        return res.status(400).json({ error: "Invalid product ID" });
+      }
+      
+      const product = await storage.getProduct(productId);
+      
+      if (!product) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+      
+      const result = z.object({
+        title: z.string().optional(),
+        titleAr: z.string().optional(),
+        description: z.string().optional(),
+        descriptionAr: z.string().optional(),
+        price: z.string().or(z.number()).optional(),
+        discountedPrice: z.string().or(z.number()).optional(),
+        imageUrl: z.string().optional(),
+        categoryId: z.number().optional(),
+        sellerId: z.number().optional(),
+        supplierId: z.number().optional(),
+        inventory: z.number().optional(),
+        isActive: z.boolean().optional()
+      }).safeParse(req.body);
+      
+      if (!result.success) {
+        return res.status(400).json({ error: "Invalid product data", details: result.error.format() });
+      }
+      
+      const updatedProduct = await storage.updateProduct(productId, result.data);
+      
+      res.json(updatedProduct);
+    } catch (error) {
+      console.error("Update product error:", error);
+      res.status(500).json({ error: "Failed to update product" });
+    }
+  });
+  
+  app.delete("/api/products/:id", adminMiddleware, async (req, res) => {
+    try {
+      const productId = parseInt(req.params.id);
+      
+      if (isNaN(productId)) {
+        return res.status(400).json({ error: "Invalid product ID" });
+      }
+      
+      const product = await storage.getProduct(productId);
+      
+      if (!product) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+      
+      await storage.deleteProduct(productId);
+      
+      res.json({ success: true, message: "Product deleted successfully" });
+    } catch (error) {
+      console.error("Delete product error:", error);
+      res.status(500).json({ error: "Failed to delete product" });
     }
   });
 
-  // API routes for cart operations
+  // Categories endpoints
+  app.get("/api/categories", async (req, res) => {
+    try {
+      const parentId = req.query.parentId 
+        ? parseInt(req.query.parentId as string) 
+        : undefined;
+      
+      const categories = await storage.getAllCategories(parentId);
+      
+      res.json(categories);
+    } catch (error) {
+      console.error("Fetch categories error:", error);
+      res.status(500).json({ error: "Failed to fetch categories" });
+    }
+  });
+  
+  app.get("/api/categories/:id", async (req, res) => {
+    try {
+      const categoryId = parseInt(req.params.id);
+      
+      if (isNaN(categoryId)) {
+        return res.status(400).json({ error: "Invalid category ID" });
+      }
+      
+      const category = await storage.getCategory(categoryId);
+      
+      if (!category) {
+        return res.status(404).json({ error: "Category not found" });
+      }
+      
+      res.json(category);
+    } catch (error) {
+      console.error("Fetch category error:", error);
+      res.status(500).json({ error: "Failed to fetch category" });
+    }
+  });
+  
+  app.post("/api/categories", adminMiddleware, async (req, res) => {
+    try {
+      const result = insertCategorySchema.safeParse(req.body);
+      
+      if (!result.success) {
+        return res.status(400).json({ error: "Invalid category data", details: result.error.format() });
+      }
+      
+      const category = await storage.createCategory(result.data);
+      
+      res.status(201).json(category);
+    } catch (error) {
+      console.error("Create category error:", error);
+      res.status(500).json({ error: "Failed to create category" });
+    }
+  });
+  
+  app.put("/api/categories/:id", adminMiddleware, async (req, res) => {
+    try {
+      const categoryId = parseInt(req.params.id);
+      
+      if (isNaN(categoryId)) {
+        return res.status(400).json({ error: "Invalid category ID" });
+      }
+      
+      const category = await storage.getCategory(categoryId);
+      
+      if (!category) {
+        return res.status(404).json({ error: "Category not found" });
+      }
+      
+      const result = z.object({
+        name: z.string().optional(),
+        nameAr: z.string().optional(),
+        imageUrl: z.string().optional(),
+        parentId: z.number().optional()
+      }).safeParse(req.body);
+      
+      if (!result.success) {
+        return res.status(400).json({ error: "Invalid category data", details: result.error.format() });
+      }
+      
+      const updatedCategory = await storage.updateCategory(categoryId, result.data);
+      
+      res.json(updatedCategory);
+    } catch (error) {
+      console.error("Update category error:", error);
+      res.status(500).json({ error: "Failed to update category" });
+    }
+  });
+  
+  app.delete("/api/categories/:id", adminMiddleware, async (req, res) => {
+    try {
+      const categoryId = parseInt(req.params.id);
+      
+      if (isNaN(categoryId)) {
+        return res.status(400).json({ error: "Invalid category ID" });
+      }
+      
+      const category = await storage.getCategory(categoryId);
+      
+      if (!category) {
+        return res.status(404).json({ error: "Category not found" });
+      }
+      
+      await storage.deleteCategory(categoryId);
+      
+      res.json({ success: true, message: "Category deleted successfully" });
+    } catch (error) {
+      console.error("Delete category error:", error);
+      res.status(500).json({ error: "Failed to delete category" });
+    }
+  });
+
+  // Cart endpoints
+  app.get("/api/cart/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      
+      if (isNaN(userId)) {
+        return res.status(400).json({ error: "Invalid user ID" });
+      }
+      
+      // Get or create cart
+      let cart = await storage.getCartByUser(userId);
+      
+      if (!cart) {
+        cart = await storage.createCart({ userId });
+      }
+      
+      // Get cart items
+      const cartItems = await storage.getCartItemsByCart(cart.id);
+      
+      res.json({ cart, items: cartItems });
+    } catch (error) {
+      console.error("Fetch cart error:", error);
+      res.status(500).json({ error: "Failed to fetch cart" });
+    }
+  });
+
   app.post("/api/cart/add", async (req, res) => {
     try {
       const { userId, productId, quantity } = req.body;
-      // In a real implementation, this would add to a cart in a database
-      res.json({ success: true, message: "Product added to cart" });
+      
+      if (!userId || !productId || !quantity) {
+        return res.status(400).json({ error: "userId, productId, and quantity are required" });
+      }
+      
+      // Get or create cart
+      let cart = await storage.getCartByUser(userId);
+      
+      if (!cart) {
+        cart = await storage.createCart({ userId });
+      }
+      
+      // Check if product exists
+      const product = await storage.getProduct(productId);
+      
+      if (!product) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+      
+      // Add to cart
+      const cartItem = await storage.createCartItem({
+        cartId: cart.id,
+        productId,
+        quantity
+      });
+      
+      res.status(201).json({ success: true, cartItem });
     } catch (error) {
+      console.error("Add to cart error:", error);
       res.status(500).json({ error: "Failed to add product to cart" });
+    }
+  });
+
+  app.post("/api/cart/update", async (req, res) => {
+    try {
+      const { cartItemId, quantity } = req.body;
+      
+      if (!cartItemId || !quantity) {
+        return res.status(400).json({ error: "cartItemId and quantity are required" });
+      }
+      
+      // Check if cart item exists
+      const cartItem = await storage.getCartItem(cartItemId);
+      
+      if (!cartItem) {
+        return res.status(404).json({ error: "Cart item not found" });
+      }
+      
+      // Update cart item
+      const updatedCartItem = await storage.updateCartItem(cartItemId, { quantity });
+      
+      res.json({ success: true, cartItem: updatedCartItem });
+    } catch (error) {
+      console.error("Update cart error:", error);
+      res.status(500).json({ error: "Failed to update cart" });
     }
   });
 
   app.post("/api/cart/remove", async (req, res) => {
     try {
-      const { userId, productId } = req.body;
-      // In a real implementation, this would remove from a cart in a database
+      const { cartItemId } = req.body;
+      
+      if (!cartItemId) {
+        return res.status(400).json({ error: "cartItemId is required" });
+      }
+      
+      // Check if cart item exists
+      const cartItem = await storage.getCartItem(cartItemId);
+      
+      if (!cartItem) {
+        return res.status(404).json({ error: "Cart item not found" });
+      }
+      
+      // Remove from cart
+      await storage.deleteCartItem(cartItemId);
+      
       res.json({ success: true, message: "Product removed from cart" });
     } catch (error) {
+      console.error("Remove from cart error:", error);
       res.status(500).json({ error: "Failed to remove product from cart" });
     }
   });
 
-  // API routes for orders
-  app.post("/api/orders/create", async (req, res) => {
+  // Orders endpoints
+  app.get("/api/orders", adminMiddleware, async (req, res) => {
     try {
-      const { userId, items, address, paymentMethod } = req.body;
-      // In a real implementation, this would create an order in a database
-      res.json({ 
-        success: true, 
-        orderId: "ORD" + Date.now(),
-        message: "Order created successfully" 
-      });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to create order" });
-    }
-  });
-
-  app.get("/api/orders/:userId", async (req, res) => {
-    try {
-      const userId = req.params.userId;
-      // In a real implementation, this would fetch orders from a database
-      const orders = [
-        { 
-          id: "ORD001", 
-          userId: userId, 
-          status: "delivered", 
-          total: 159.99,
-          createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-          items: [
-            { productId: 1, quantity: 1, price: 159.99 }
-          ]
-        },
-        { 
-          id: "ORD002", 
-          userId: userId, 
-          status: "processing", 
-          total: 89.99,
-          createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-          items: [
-            { productId: 2, quantity: 1, price: 89.99 }
-          ]
-        }
-      ];
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 100;
+      const offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
+      
+      const orders = await storage.getAllOrders(limit, offset);
       
       res.json(orders);
     } catch (error) {
+      console.error("Fetch orders error:", error);
       res.status(500).json({ error: "Failed to fetch orders" });
     }
   });
 
-  // API routes for admin settings
-  app.get("/api/admin/settings", async (req, res) => {
+  app.get("/api/orders/user/:userId", async (req, res) => {
     try {
-      // In a real implementation, this would fetch settings from a database
-      const settings = {
-        mainBackground: "#0f172a",
-        primaryColor: "#a3e635",
-        secondaryColor: "#2563eb",
-        headerColor: "#1e293b",
-        titleFont: "Roboto",
-        bodyFont: "Roboto",
-        logoUrl: "https://example.com/logo.png",
-        mainBannerUrl: "https://example.com/banner.jpg",
-        additionalBanners: [
-          "https://example.com/banner1.jpg",
-          "https://example.com/banner2.jpg"
-        ],
-        bannerCount: 3,
-        showFeaturedOffers: true,
-        showCustomerReviews: true,
-        showDiscounts: true,
-        enableScrollEffects: false,
-        showWhatsAppButton: true,
-        enableNotifications: false,
-        maintenanceMode: false,
-        sessionDuration: 60
-      };
+      const userId = parseInt(req.params.userId);
+      
+      if (isNaN(userId)) {
+        return res.status(400).json({ error: "Invalid user ID" });
+      }
+      
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 100;
+      const offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
+      
+      const orders = await storage.getOrdersByUser(userId, limit, offset);
+      
+      // Fetch items for each order
+      const ordersWithItems = await Promise.all(
+        orders.map(async (order) => {
+          const items = await storage.getOrderItemsByOrder(order.id);
+          return { ...order, items };
+        })
+      );
+      
+      res.json(ordersWithItems);
+    } catch (error) {
+      console.error("Fetch user orders error:", error);
+      res.status(500).json({ error: "Failed to fetch orders" });
+    }
+  });
+
+  app.get("/api/orders/:id", async (req, res) => {
+    try {
+      const orderId = parseInt(req.params.id);
+      
+      if (isNaN(orderId)) {
+        return res.status(400).json({ error: "Invalid order ID" });
+      }
+      
+      const order = await storage.getOrder(orderId);
+      
+      if (!order) {
+        return res.status(404).json({ error: "Order not found" });
+      }
+      
+      // Fetch order items
+      const items = await storage.getOrderItemsByOrder(orderId);
+      
+      res.json({ ...order, items });
+    } catch (error) {
+      console.error("Fetch order error:", error);
+      res.status(500).json({ error: "Failed to fetch order" });
+    }
+  });
+
+  app.post("/api/orders/create", async (req, res) => {
+    try {
+      const { userId, items, address, phoneNumber, paymentMethod } = req.body;
+      
+      if (!userId || !items || !items.length || !address || !phoneNumber || !paymentMethod) {
+        return res.status(400).json({ 
+          error: "userId, items, address, phoneNumber, and paymentMethod are required" 
+        });
+      }
+      
+      // Calculate total
+      let total = 0;
+      
+      for (const item of items) {
+        const product = await storage.getProduct(item.productId);
+        
+        if (!product) {
+          return res.status(404).json({ 
+            error: `Product with ID ${item.productId} not found` 
+          });
+        }
+        
+        // Use discounted price if available
+        const price = product.discountedPrice || product.price;
+        total += parseFloat(price.toString()) * item.quantity;
+      }
+      
+      // Create order
+      const order = await storage.createOrder({
+        userId,
+        status: "pending",
+        total,
+        address,
+        phoneNumber,
+        paymentMethod
+      });
+      
+      // Create order items
+      for (const item of items) {
+        const product = await storage.getProduct(item.productId);
+        // Use discounted price if available
+        const price = product.discountedPrice || product.price;
+        
+        await storage.createOrderItem({
+          orderId: order.id,
+          productId: item.productId,
+          quantity: item.quantity,
+          price: parseFloat(price.toString())
+        });
+      }
+      
+      res.status(201).json({ 
+        success: true, 
+        orderId: order.id,
+        message: "Order created successfully" 
+      });
+    } catch (error) {
+      console.error("Create order error:", error);
+      res.status(500).json({ error: "Failed to create order" });
+    }
+  });
+
+  app.put("/api/orders/:id/status", adminMiddleware, async (req, res) => {
+    try {
+      const orderId = parseInt(req.params.id);
+      const { status } = req.body;
+      
+      if (isNaN(orderId)) {
+        return res.status(400).json({ error: "Invalid order ID" });
+      }
+      
+      if (!status) {
+        return res.status(400).json({ error: "Status is required" });
+      }
+      
+      const order = await storage.getOrder(orderId);
+      
+      if (!order) {
+        return res.status(404).json({ error: "Order not found" });
+      }
+      
+      const updatedOrder = await storage.updateOrder(orderId, { status });
+      
+      res.json({ success: true, order: updatedOrder });
+    } catch (error) {
+      console.error("Update order status error:", error);
+      res.status(500).json({ error: "Failed to update order status" });
+    }
+  });
+
+  // Suppliers endpoints
+  app.get("/api/suppliers", async (req, res) => {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 100;
+      const offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
+      
+      const suppliers = await storage.getAllSuppliers(limit, offset);
+      
+      res.json(suppliers);
+    } catch (error) {
+      console.error("Fetch suppliers error:", error);
+      res.status(500).json({ error: "Failed to fetch suppliers" });
+    }
+  });
+
+  app.get("/api/suppliers/:id", async (req, res) => {
+    try {
+      const supplierId = parseInt(req.params.id);
+      
+      if (isNaN(supplierId)) {
+        return res.status(400).json({ error: "Invalid supplier ID" });
+      }
+      
+      const supplier = await storage.getSupplier(supplierId);
+      
+      if (!supplier) {
+        return res.status(404).json({ error: "Supplier not found" });
+      }
+      
+      res.json(supplier);
+    } catch (error) {
+      console.error("Fetch supplier error:", error);
+      res.status(500).json({ error: "Failed to fetch supplier" });
+    }
+  });
+
+  app.post("/api/suppliers", adminMiddleware, async (req, res) => {
+    try {
+      const result = insertSupplierSchema.safeParse(req.body);
+      
+      if (!result.success) {
+        return res.status(400).json({ error: "Invalid supplier data", details: result.error.format() });
+      }
+      
+      const supplier = await storage.createSupplier(result.data);
+      
+      res.status(201).json(supplier);
+    } catch (error) {
+      console.error("Create supplier error:", error);
+      res.status(500).json({ error: "Failed to create supplier" });
+    }
+  });
+
+  app.put("/api/suppliers/:id", adminMiddleware, async (req, res) => {
+    try {
+      const supplierId = parseInt(req.params.id);
+      
+      if (isNaN(supplierId)) {
+        return res.status(400).json({ error: "Invalid supplier ID" });
+      }
+      
+      const supplier = await storage.getSupplier(supplierId);
+      
+      if (!supplier) {
+        return res.status(404).json({ error: "Supplier not found" });
+      }
+      
+      const result = z.object({
+        name: z.string().optional(),
+        nameAr: z.string().optional(),
+        website: z.string().optional(),
+        apiKey: z.string().optional(),
+        apiUrl: z.string().optional(),
+        marginRate: z.number().or(z.string()).optional(),
+        isActive: z.boolean().optional()
+      }).safeParse(req.body);
+      
+      if (!result.success) {
+        return res.status(400).json({ error: "Invalid supplier data", details: result.error.format() });
+      }
+      
+      const updatedSupplier = await storage.updateSupplier(supplierId, result.data);
+      
+      res.json(updatedSupplier);
+    } catch (error) {
+      console.error("Update supplier error:", error);
+      res.status(500).json({ error: "Failed to update supplier" });
+    }
+  });
+
+  app.delete("/api/suppliers/:id", adminMiddleware, async (req, res) => {
+    try {
+      const supplierId = parseInt(req.params.id);
+      
+      if (isNaN(supplierId)) {
+        return res.status(400).json({ error: "Invalid supplier ID" });
+      }
+      
+      const supplier = await storage.getSupplier(supplierId);
+      
+      if (!supplier) {
+        return res.status(404).json({ error: "Supplier not found" });
+      }
+      
+      await storage.deleteSupplier(supplierId);
+      
+      res.json({ success: true, message: "Supplier deleted successfully" });
+    } catch (error) {
+      console.error("Delete supplier error:", error);
+      res.status(500).json({ error: "Failed to delete supplier" });
+    }
+  });
+
+  // Admin settings endpoints
+  app.get("/api/admin/settings", adminMiddleware, async (req, res) => {
+    try {
+      const settings = await storage.getAppSettings();
       
       res.json(settings);
     } catch (error) {
+      console.error("Fetch settings error:", error);
       res.status(500).json({ error: "Failed to fetch settings" });
     }
   });
 
-  app.post("/api/admin/settings", async (req, res) => {
+  app.post("/api/admin/settings", adminMiddleware, async (req, res) => {
     try {
       const settings = req.body;
-      // In a real implementation, this would update settings in a database
+      
+      if (!settings || typeof settings !== "object") {
+        return res.status(400).json({ error: "Invalid settings data" });
+      }
+      
+      // Update each setting
+      const promises = Object.entries(settings).map(([key, value]) => {
+        return storage.createOrUpdateSetting(key, value.toString());
+      });
+      
+      await Promise.all(promises);
+      
       res.json({ success: true, message: "Settings updated successfully" });
     } catch (error) {
+      console.error("Update settings error:", error);
       res.status(500).json({ error: "Failed to update settings" });
     }
   });
 
-  // API routes for suppliers
-  app.get("/api/suppliers", async (req, res) => {
+  // Dashboard endpoints
+  app.get("/api/admin/dashboard/stats", adminMiddleware, async (req, res) => {
     try {
-      // In a real implementation, this would fetch suppliers from a database
-      const suppliers = [
-        {
-          id: 1,
-          name: "Tech Wholesalers",
-          nameAr: "تجار التكنولوجيا بالجملة",
-          website: "https://techws.example.com",
-          apiKey: "api_key_1",
-          apiUrl: "https://api.techws.example.com",
-          marginRate: 0.15,
-          isActive: true
-        },
-        {
-          id: 2,
-          name: "Global Gadgets",
-          nameAr: "أجهزة عالمية",
-          website: "https://globalgadgets.example.com",
-          apiKey: "api_key_2",
-          apiUrl: "https://api.globalgadgets.example.com",
-          marginRate: 0.2,
-          isActive: true
-        },
-        {
-          id: 3,
-          name: "Express Electronics",
-          nameAr: "إلكترونيات إكسبريس",
-          website: "https://expresselectronics.example.com",
-          apiKey: "api_key_3",
-          apiUrl: "https://api.expresselectronics.example.com",
-          marginRate: 0.18,
-          isActive: true
-        }
-      ];
+      const userCount = await storage.getUserCount();
+      const productCount = await storage.getProductCount();
+      const categoryCount = await storage.getCategoryCount();
+      const orderCount = await storage.getOrderCount();
+      const supplierCount = await storage.getSupplierCount();
       
-      res.json(suppliers);
+      res.json({
+        userCount,
+        productCount,
+        categoryCount,
+        orderCount,
+        supplierCount
+      });
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch suppliers" });
+      console.error("Fetch dashboard stats error:", error);
+      res.status(500).json({ error: "Failed to fetch dashboard stats" });
+    }
+  });
+
+  // User management endpoints (admin)
+  app.get("/api/admin/users", adminMiddleware, async (req, res) => {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 100;
+      const offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
+      
+      const users = await storage.getAllUsers(limit, offset);
+      
+      // Omit passwords
+      const usersWithoutPasswords = users.map(user => {
+        const { password, ...userWithoutPassword } = user;
+        return userWithoutPassword;
+      });
+      
+      res.json(usersWithoutPasswords);
+    } catch (error) {
+      console.error("Fetch users error:", error);
+      res.status(500).json({ error: "Failed to fetch users" });
+    }
+  });
+
+  app.put("/api/admin/users/:id", adminMiddleware, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      
+      if (isNaN(userId)) {
+        return res.status(400).json({ error: "Invalid user ID" });
+      }
+      
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      
+      const result = z.object({
+        email: z.string().email().optional(),
+        username: z.string().optional(),
+        fullName: z.string().optional(),
+        role: z.string().optional(),
+        profileImage: z.string().optional()
+      }).safeParse(req.body);
+      
+      if (!result.success) {
+        return res.status(400).json({ error: "Invalid user data", details: result.error.format() });
+      }
+      
+      const updatedUser = await storage.updateUser(userId, result.data);
+      
+      if (updatedUser) {
+        const { password, ...userWithoutPassword } = updatedUser;
+        res.json(userWithoutPassword);
+      } else {
+        res.status(404).json({ error: "User not found" });
+      }
+    } catch (error) {
+      console.error("Update user error:", error);
+      res.status(500).json({ error: "Failed to update user" });
+    }
+  });
+
+  app.delete("/api/admin/users/:id", adminMiddleware, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      
+      if (isNaN(userId)) {
+        return res.status(400).json({ error: "Invalid user ID" });
+      }
+      
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      
+      await storage.deleteUser(userId);
+      
+      res.json({ success: true, message: "User deleted successfully" });
+    } catch (error) {
+      console.error("Delete user error:", error);
+      res.status(500).json({ error: "Failed to delete user" });
     }
   });
 

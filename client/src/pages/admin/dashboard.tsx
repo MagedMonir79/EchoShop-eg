@@ -1,251 +1,258 @@
-import { useContext, useState, useEffect } from "react";
-import { LanguageContext } from "@/context/language-context";
-import { AuthContext } from "@/context/auth-context";
+import { useQuery } from "@tanstack/react-query";
+import { useContext } from "react";
 import AdminLayout from "@/components/layout/admin-layout";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+import { LanguageContext } from "@/context/language-context";
+import { 
+  Card, 
+  CardContent, 
+  CardHeader, 
+  CardTitle, 
+  CardDescription 
 } from "@/components/ui/card";
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { CircleUser, ShoppingBag, DollarSign, TrendingUp, Package } from "lucide-react";
-import { useLocation } from "wouter";
-import { useToast } from "@/hooks/use-toast";
+import { 
+  Users, 
+  ShoppingBag, 
+  Package, 
+  Truck, 
+  Tag,
+  TrendingUp, 
+  DollarSign,
+  ShoppingCart,
+  BarChart4
+} from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+
+interface DashboardStats {
+  userCount: number;
+  productCount: number;
+  categoryCount: number;
+  orderCount: number;
+  supplierCount: number;
+}
 
 export default function AdminDashboard() {
-  const { t, language } = useContext(LanguageContext);
-  const { user, userData } = useContext(AuthContext);
-  const { toast } = useToast();
-  const [, navigate] = useLocation();
+  const { t } = useContext(LanguageContext);
   
-  useEffect(() => {
-    // Check if user is admin
-    if (user && userData && userData.role !== "admin") {
-      toast({
-        title: t("accessDenied"),
-        description: t("adminOnly"),
-        variant: "destructive",
-      });
-      navigate("/");
-    }
-  }, [user, userData, navigate, toast, t]);
-  
-  // Mock data for charts
-  const salesData = [
-    { name: "Jan", sales: 4000 },
-    { name: "Feb", sales: 3000 },
-    { name: "Mar", sales: 5000 },
-    { name: "Apr", sales: 7000 },
-    { name: "May", sales: 5000 },
-    { name: "Jun", sales: 6000 },
-    { name: "Jul", sales: 8000 },
-  ];
-  
-  const categoryData = [
-    { name: t("electronics"), value: 35 },
-    { name: t("fashion"), value: 25 },
-    { name: t("home"), value: 18 },
-    { name: t("beauty"), value: 12 },
-    { name: t("toys"), value: 10 },
-  ];
-  
+  const { data: stats, isLoading } = useQuery<DashboardStats>({
+    queryKey: ['/api/admin/dashboard/stats'],
+  });
+
+  // Dummy data for charts
   const recentOrders = [
-    { id: "ORD001", customer: "Ahmed Ali", product: "Wireless Headphones", amount: "$159.99", status: "Delivered" },
-    { id: "ORD002", customer: "Sara Khan", product: "Smart Watch", amount: "$89.99", status: "Processing" },
-    { id: "ORD003", customer: "Mohammed Hassan", product: "Laptop Stand", amount: "$29.99", status: "Shipped" },
-    { id: "ORD004", customer: "Layla Mahmoud", product: "Fitness Tracker", amount: "$49.99", status: "Pending" },
-    { id: "ORD005", customer: "Omar Ibrahim", product: "Bluetooth Speaker", amount: "$79.99", status: "Delivered" },
+    { id: 1, customer: 'أحمد محمد', amount: 120.50, status: 'قيد المعالجة', date: '2023-09-15' },
+    { id: 2, customer: 'فاطمة علي', amount: 89.99, status: 'تم التسليم', date: '2023-09-14' },
+    { id: 3, customer: 'محمد عبد الله', amount: 45.75, status: 'قيد التوصيل', date: '2023-09-13' },
+    { id: 4, customer: 'نورة سعيد', amount: 210.25, status: 'قيد المعالجة', date: '2023-09-12' },
+    { id: 5, customer: 'خالد العلي', amount: 65.00, status: 'تم التسليم', date: '2023-09-11' },
   ];
-  
+
+  const topProducts = [
+    { id: 1, name: 'سماعات لاسلكية', sales: 245, amount: 24500 },
+    { id: 2, name: 'ساعة ذكية سلسلة 6', sales: 187, amount: 56100 },
+    { id: 3, name: 'كاميرا بث 4K', sales: 124, amount: 16120 },
+    { id: 4, name: 'وحدة تحكم الألعاب برو', sales: 96, amount: 7680 },
+  ];
+
   return (
     <AdminLayout>
-      <h1 className="text-3xl font-bold mb-6">{t("dashboard")}</h1>
-      
-      {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <Card className="bg-mediumBlue border-0">
-          <CardContent className="p-6 flex items-center">
-            <div className="p-4 bg-blue-900 rounded-full">
-              <DollarSign className="h-6 w-6 text-primary" />
-            </div>
-            <div className="ml-4">
-              <p className="text-gray-400 text-sm">{t("totalRevenue")}</p>
-              <h3 className="text-2xl font-bold">$24,589</h3>
-              <p className="text-sm text-success">+12.5% {t("fromLastMonth")}</p>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="p-6">
+        <h1 className="text-3xl font-bold mb-6">{t("adminDashboard")}</h1>
         
-        <Card className="bg-mediumBlue border-0">
-          <CardContent className="p-6 flex items-center">
-            <div className="p-4 bg-blue-900 rounded-full">
-              <ShoppingBag className="h-6 w-6 text-primary" />
-            </div>
-            <div className="ml-4">
-              <p className="text-gray-400 text-sm">{t("totalOrders")}</p>
-              <h3 className="text-2xl font-bold">1,256</h3>
-              <p className="text-sm text-success">+8.2% {t("fromLastMonth")}</p>
-            </div>
-          </CardContent>
-        </Card>
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+            {[...Array(5)].map((_, i) => (
+              <Card key={i} className="shadow-md">
+                <CardContent className="p-6">
+                  <div className="h-20 animate-pulse bg-gray-200 dark:bg-gray-700 rounded"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+            <Card className="shadow-md">
+              <CardContent className="p-6">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{t("totalUsers")}</p>
+                    <h3 className="text-2xl font-bold mt-1">{stats?.userCount || 0}</h3>
+                  </div>
+                  <div className="p-3 bg-primary/20 rounded-full">
+                    <Users className="h-6 w-6 text-primary" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="shadow-md">
+              <CardContent className="p-6">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{t("totalProducts")}</p>
+                    <h3 className="text-2xl font-bold mt-1">{stats?.productCount || 0}</h3>
+                  </div>
+                  <div className="p-3 bg-blue-100 dark:bg-blue-900/20 rounded-full">
+                    <Package className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="shadow-md">
+              <CardContent className="p-6">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{t("totalCategories")}</p>
+                    <h3 className="text-2xl font-bold mt-1">{stats?.categoryCount || 0}</h3>
+                  </div>
+                  <div className="p-3 bg-purple-100 dark:bg-purple-900/20 rounded-full">
+                    <Tag className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="shadow-md">
+              <CardContent className="p-6">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{t("totalOrders")}</p>
+                    <h3 className="text-2xl font-bold mt-1">{stats?.orderCount || 0}</h3>
+                  </div>
+                  <div className="p-3 bg-amber-100 dark:bg-amber-900/20 rounded-full">
+                    <ShoppingCart className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="shadow-md">
+              <CardContent className="p-6">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{t("totalSuppliers")}</p>
+                    <h3 className="text-2xl font-bold mt-1">{stats?.supplierCount || 0}</h3>
+                  </div>
+                  <div className="p-3 bg-emerald-100 dark:bg-emerald-900/20 rounded-full">
+                    <Truck className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
         
-        <Card className="bg-mediumBlue border-0">
-          <CardContent className="p-6 flex items-center">
-            <div className="p-4 bg-blue-900 rounded-full">
-              <CircleUser className="h-6 w-6 text-primary" />
-            </div>
-            <div className="ml-4">
-              <p className="text-gray-400 text-sm">{t("totalCustomers")}</p>
-              <h3 className="text-2xl font-bold">854</h3>
-              <p className="text-sm text-success">+5.3% {t("fromLastMonth")}</p>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+          <Card className="shadow-md">
+            <CardHeader className="pb-2">
+              <CardTitle>{t("recentOrders")}</CardTitle>
+              <CardDescription>{t("last5Orders")}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {recentOrders.map((order) => (
+                  <div key={order.id} className="flex items-center justify-between border-b pb-2">
+                    <div className="flex items-start flex-col">
+                      <span className="font-medium">{order.customer}</span>
+                      <span className="text-sm text-gray-500">{order.date}</span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <span className="text-gray-600">{order.amount.toFixed(2)} $</span>
+                      <span 
+                        className={`px-2 py-1 text-xs rounded-full ${
+                          order.status === 'تم التسليم' 
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
+                            : order.status === 'قيد التوصيل'
+                              ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                              : 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400'
+                        }`}
+                      >
+                        {order.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="shadow-md">
+            <CardHeader className="pb-2">
+              <CardTitle>{t("topSellingProducts")}</CardTitle>
+              <CardDescription>{t("bestPerformingProducts")}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                {topProducts.map((product) => (
+                  <div key={product.id} className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium">{product.name}</span>
+                      <span className="text-sm text-gray-500">{product.sales} {t("sold")}</span>
+                    </div>
+                    <Progress value={product.sales / 2.5} className="h-2" />
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
         
-        <Card className="bg-mediumBlue border-0">
-          <CardContent className="p-6 flex items-center">
-            <div className="p-4 bg-blue-900 rounded-full">
-              <Package className="h-6 w-6 text-primary" />
-            </div>
-            <div className="ml-4">
-              <p className="text-gray-400 text-sm">{t("totalProducts")}</p>
-              <h3 className="text-2xl font-bold">512</h3>
-              <p className="text-sm text-success">+15.7% {t("fromLastMonth")}</p>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+          <Card className="shadow-md">
+            <CardContent className="pt-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-lg font-semibold">{t("totalRevenue")}</h3>
+                  <p className="text-3xl font-bold mt-2">15,240.50 $</p>
+                  <p className="text-sm text-green-600 dark:text-green-400 mt-1 flex items-center">
+                    <TrendingUp className="h-4 w-4 mr-1" />
+                    +12.5% {t("fromLastMonth")}
+                  </p>
+                </div>
+                <div className="p-4 bg-green-100 dark:bg-green-900/20 rounded-full">
+                  <DollarSign className="h-8 w-8 text-green-600 dark:text-green-400" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="shadow-md">
+            <CardContent className="pt-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-lg font-semibold">{t("avgOrderValue")}</h3>
+                  <p className="text-3xl font-bold mt-2">124.30 $</p>
+                  <p className="text-sm text-amber-600 dark:text-amber-400 mt-1 flex items-center">
+                    <TrendingUp className="h-4 w-4 mr-1" />
+                    +3.2% {t("fromLastMonth")}
+                  </p>
+                </div>
+                <div className="p-4 bg-amber-100 dark:bg-amber-900/20 rounded-full">
+                  <ShoppingBag className="h-8 w-8 text-amber-600 dark:text-amber-400" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="shadow-md">
+            <CardContent className="pt-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-lg font-semibold">{t("conversionRate")}</h3>
+                  <p className="text-3xl font-bold mt-2">3.6%</p>
+                  <p className="text-sm text-red-600 dark:text-red-400 mt-1 flex items-center">
+                    <TrendingUp className="h-4 w-4 mr-1" />
+                    -0.5% {t("fromLastMonth")}
+                  </p>
+                </div>
+                <div className="p-4 bg-blue-100 dark:bg-blue-900/20 rounded-full">
+                  <BarChart4 className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-      
-      {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <Card className="bg-mediumBlue border-0">
-          <CardHeader>
-            <CardTitle>{t("monthlySales")}</CardTitle>
-            <CardDescription>{t("monthlySalesDesc")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={salesData}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                  <XAxis dataKey="name" stroke="#94a3b8" />
-                  <YAxis stroke="#94a3b8" />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: '#0f172a', 
-                      borderColor: '#334155',
-                      color: '#fff'
-                    }} 
-                  />
-                  <Legend />
-                  <Line
-                    type="monotone"
-                    dataKey="sales"
-                    stroke="#a3e635"
-                    activeDot={{ r: 8 }}
-                    strokeWidth={2}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="bg-mediumBlue border-0">
-          <CardHeader>
-            <CardTitle>{t("categorySales")}</CardTitle>
-            <CardDescription>{t("categorySalesDesc")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={categoryData}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                  <XAxis dataKey="name" stroke="#94a3b8" />
-                  <YAxis stroke="#94a3b8" />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: '#0f172a', 
-                      borderColor: '#334155',
-                      color: '#fff'
-                    }} 
-                  />
-                  <Legend />
-                  <Bar dataKey="value" fill="#3b82f6" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-      
-      {/* Recent Orders */}
-      <Card className="bg-mediumBlue border-0">
-        <CardHeader>
-          <CardTitle>{t("recentOrders")}</CardTitle>
-          <CardDescription>{t("recentOrdersDesc")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t("orderId")}</TableHead>
-                <TableHead>{t("customer")}</TableHead>
-                <TableHead>{t("product")}</TableHead>
-                <TableHead>{t("amount")}</TableHead>
-                <TableHead>{t("status")}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {recentOrders.map((order) => (
-                <TableRow key={order.id}>
-                  <TableCell className="font-medium">{order.id}</TableCell>
-                  <TableCell>{order.customer}</TableCell>
-                  <TableCell>{order.product}</TableCell>
-                  <TableCell>{order.amount}</TableCell>
-                  <TableCell>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      order.status === "Delivered" ? "bg-success/20 text-success" :
-                      order.status === "Processing" ? "bg-blue-500/20 text-blue-500" :
-                      order.status === "Shipped" ? "bg-yellow-500/20 text-yellow-500" :
-                      "bg-gray-500/20 text-gray-400"
-                    }`}>
-                      {order.status}
-                    </span>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
     </AdminLayout>
   );
 }
