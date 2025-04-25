@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 20 14.3% 4.1%;
+  --muted: 60 4.8% 95.9%;
+  --muted-foreground: 25 5.3% 44.7%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 14.3% 4.1%;
+  --card: 0 0% 100%;
+  --card-foreground: 20 14.3% 4.1%;
+  --border: 20 5.9% 90%;
+  --input: 20 5.9% 90%;
+  --primary: 84 74% 54%; /* Lime green color (#a3e635) */
+  --primary-foreground: 0 0% 0%; /* Black text on primary */
+  --secondary: 217 91% 53%; /* Blue (#2563eb) */
+  --secondary-foreground: 0 0% 100%; /* White text on secondary */
+  --accent: 60 4.8% 95.9%;
+  --accent-foreground: 24 9.8% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --ring: 20 14.3% 4.1%;
+  --radius: 0.5rem;
+
+  /* Custom app colors */
+  --darkBlue: 222 47% 11%; /* #0f172a */
+  --mediumBlue: 217 33% 17%; /* #1e293b */
+  --lightBlue: 198 93% 60%; /* #38bdf8 */
+  --success: 142 72% 45%; /* #22c55e */
+  --danger: 0 84% 60%; /* #ef4444 */
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --primary: 84 74% 54%; /* Keep lime green in dark mode */
+  --primary-foreground: 0 0% 0%; /* Black text on primary */
+  --secondary: 217 91% 53%; /* Blue (#2563eb) */
+  --secondary-foreground: 0 0% 100%;
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 240 4.9% 83.9%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+/* App specific styles */
+.rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+.ltr {
+  direction: ltr;
+  text-align: left;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  transition: transform 0.3s ease;
+}
+
+/* Custom background gradient */
+.bg-gradient-primary {
+  background: linear-gradient(to bottom right, hsl(var(--darkBlue)), hsl(222, 47%, 20%));
+}
+
+/* Custom color utility classes */
+.bg-darkBlue {
+  background-color: hsl(var(--darkBlue));
+}
+
+.bg-mediumBlue {
+  background-color: hsl(var(--mediumBlue));
+}
+
+.text-primary {
+  color: hsl(var(--primary));
+}
+
+.bg-primary {
+  background-color: hsl(var(--primary));
+}
+
+.text-lightBlue {
+  color: hsl(var(--lightBlue));
+}
+
+.bg-success {
+  background-color: hsl(var(--success));
+}
+
+.bg-danger {
+  background-color: hsl(var(--danger));
+}
