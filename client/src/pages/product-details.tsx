@@ -74,6 +74,11 @@ export default function ProductDetails() {
   const discountPercentage = hasDiscount 
     ? Math.round(((product.price - product.discountedPrice!) / product.price) * 100) 
     : 0;
+    
+  // Convert to Egyptian Pound (EGP)
+  const exchangeRate = 50; // 1 USD = 50 EGP (example rate)
+  const displayPriceEGP = Math.round(displayPrice * exchangeRate);
+  const originalPriceEGP = Math.round(product.price * exchangeRate);
 
   return (
     <MainLayout>
@@ -133,14 +138,15 @@ export default function ProductDetails() {
             {/* Price */}
             <div className="mb-6">
               <div className="flex items-center gap-2">
-                <span className="text-3xl font-bold text-primary">${displayPrice}</span>
+                <span className="text-3xl font-bold text-primary">{displayPriceEGP} ج.م</span>
                 {hasDiscount && (
-                  <span className="text-xl text-gray-400 line-through">${product.price}</span>
+                  <span className="text-xl text-gray-400 line-through">{originalPriceEGP} ج.م</span>
                 )}
               </div>
               {hasDiscount && (
-                <p className="text-green-500 mt-1">{t("youSave")} ${(product.price - product.discountedPrice!).toFixed(2)}</p>
+                <p className="text-green-500 mt-1">{t("youSave")} {(originalPriceEGP - displayPriceEGP)} ج.م</p>
               )}
+              <p className="text-sm text-gray-500 mt-1">${displayPrice} USD</p>
             </div>
             
             {/* Short Description */}

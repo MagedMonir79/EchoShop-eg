@@ -18,6 +18,13 @@ import {
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 
+// Currency converter helper
+const convertToEGP = (price: number | string) => {
+  const numericPrice = typeof price === 'string' ? parseFloat(price) : price;
+  const exchangeRate = 50; // 1 USD = 50 EGP (example rate)
+  return Math.round(numericPrice * exchangeRate);
+};
+
 export default function Cart() {
   const { t, language } = useContext(LanguageContext);
   const { cartItems, updateQuantity, removeFromCart, totalPrice, clearCart } = useContext(CartContext);
@@ -33,7 +40,9 @@ export default function Cart() {
     // Simulate API call
     setTimeout(() => {
       if (promoCode.toUpperCase() === "ECHO10") {
-        setDiscount(totalPrice * 0.1);
+        // Make sure totalPrice is treated as a number for calculation
+        const discountAmount = typeof totalPrice === 'number' ? totalPrice * 0.1 : 0;
+        setDiscount(discountAmount);
         toast({
           title: t("success"),
           description: t("promoApplied"),
@@ -109,13 +118,16 @@ export default function Cart() {
                             {language === "ar" && item.product.titleAr ? item.product.titleAr : item.product.title}
                           </h3>
                           <p className="text-primary font-bold mt-1">
-                            ${item.product.discountedPrice || item.product.price}
+                            {convertToEGP(item.product.discountedPrice || item.product.price)} ج.م
                           </p>
                           {item.product.discountedPrice && (
                             <p className="text-gray-400 line-through text-sm">
-                              ${item.product.price}
+                              {convertToEGP(item.product.price)} ج.م
                             </p>
                           )}
+                          <p className="text-xs text-gray-500">
+                            ${(item.product.discountedPrice || item.product.price).toFixed(2)} USD
+                          </p>
                         </div>
                         <div className="flex flex-row sm:flex-col justify-between items-end mt-4 sm:mt-0">
                           <div className="flex items-center border border-gray-700 rounded-md">
@@ -180,28 +192,44 @@ export default function Cart() {
                   <div className="space-y-4">
                     <div className="flex justify-between">
                       <span>{t("subtotal")}</span>
-                      <span>${totalPrice.toFixed(2)}</span>
+                      <div className="text-right">
+                        <div>{convertToEGP(totalPrice)} ج.م</div>
+                        <div className="text-xs text-gray-500">${totalPrice.toFixed(2)} USD</div>
+                      </div>
                     </div>
                     
                     {discount > 0 && (
                       <div className="flex justify-between text-success">
                         <span>{t("discount")}</span>
-                        <span>-${discount.toFixed(2)}</span>
+                        <div className="text-right">
+                          <div>-{convertToEGP(discount)} ج.م</div>
+                          <div className="text-xs text-gray-500">-${discount.toFixed(2)} USD</div>
+                        </div>
                       </div>
                     )}
                     
                     <div className="flex justify-between">
                       <span>{t("shipping")}</span>
-                      <span>{totalPrice > 100 ? t("free") : "$10.00"}</span>
+                      <div className="text-right">
+                        {totalPrice > 100 ? (
+                          <div>{t("free")}</div>
+                        ) : (
+                          <>
+                            <div>{convertToEGP(10)} ج.م</div>
+                            <div className="text-xs text-gray-500">$10.00 USD</div>
+                          </>
+                        )}
+                      </div>
                     </div>
                     
                     <Separator className="my-4 bg-gray-700" />
                     
                     <div className="flex justify-between font-bold text-lg">
                       <span>{t("total")}</span>
-                      <span>
-                        ${(totalPrice - discount + (totalPrice > 100 ? 0 : 10)).toFixed(2)}
-                      </span>
+                      <div className="text-right">
+                        <div>{convertToEGP(totalPrice - discount + (totalPrice > 100 ? 0 : 10))} ج.م</div>
+                        <div className="text-xs text-gray-500">${(totalPrice - discount + (totalPrice > 100 ? 0 : 10)).toFixed(2)} USD</div>
+                      </div>
                     </div>
                     
                     <div className="pt-4">

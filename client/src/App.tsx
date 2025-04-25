@@ -12,6 +12,7 @@ import Home from "@/pages/home";
 import Login from "@/pages/login";
 import Signup from "@/pages/signup";
 import Products from "@/pages/products";
+import ProductDetails from "@/pages/product-details";
 import Cart from "@/pages/cart";
 
 // Admin Pages
@@ -26,6 +27,7 @@ function Router() {
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
       <Route path="/products" component={Products} />
+      <Route path="/product/:id" component={ProductDetails} />
       <Route path="/cart" component={Cart} />
       
       {/* Admin Routes */}
