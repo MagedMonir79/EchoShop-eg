@@ -15,7 +15,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { FcGoogle } from "react-icons/fc";
 import LanguageSwitcher from "@/components/ui/language-switcher";
 
 // Form schema
@@ -28,10 +30,11 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function Login() {
   const { t, language } = useContext(LanguageContext);
-  const { login } = useContext(AuthContext);
+  const { login, loginWithGoogle } = useContext(AuthContext);
   const { toast } = useToast();
   const [, navigate] = useLocation();
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   // Initialize form
   const form = useForm<LoginFormValues>({
@@ -63,6 +66,23 @@ export default function Login() {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+  
+  // Google sign-in handler
+  const handleGoogleSignIn = async () => {
+    setIsGoogleLoading(true);
+    
+    try {
+      await loginWithGoogle();
+      // Note: The actual navigation happens after the redirect in the AuthProvider
+    } catch (error: any) {
+      toast({
+        title: t("error"),
+        description: error.message || "Failed to log in with Google.",
+        variant: "destructive",
+      });
+      setIsGoogleLoading(false);
     }
   };
 
@@ -138,6 +158,32 @@ export default function Login() {
               </Button>
             </form>
           </Form>
+          
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <Separator className="w-full border-gray-700" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-mediumBlue px-2 text-gray-400">
+                  {t("orContinueWith")}
+                </span>
+              </div>
+            </div>
+            
+            <div className="mt-6">
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full bg-darkBlue border-gray-700 hover:bg-slate-800"
+                onClick={handleGoogleSignIn}
+                disabled={isGoogleLoading}
+              >
+                <FcGoogle className="mr-2 h-5 w-5" />
+                {isGoogleLoading ? t("loading") : t("continueWithGoogle")}
+              </Button>
+            </div>
+          </div>
           
           <div className="mt-6 text-center">
             <p className="text-gray-400">

@@ -23,14 +23,14 @@ export const translations: Translations = {
     
     // Navigation
     "home": "Home",
-    "allProducts": "All Products",
+    "allProductsNav": "All Products",
     "electronics": "Electronics",
     "fashion": "Fashion",
     "homeAndGarden": "Home & Garden",
     "beauty": "Beauty",
     "sports": "Sports",
     "toys": "Toys",
-    "bestSellers": "Best Sellers",
+    "bestSellersNav": "Best Sellers",
     
     // Hero
     "heroTitle": "Shop the latest collections",
@@ -126,6 +126,8 @@ export const translations: Translations = {
     "fullName": "Full Name",
     "username": "Username",
     "signupTitle": "Create an Account",
+    "orContinueWith": "Or continue with",
+    "continueWithGoogle": "Continue with Google",
     
     // Miscellaneous
     "loading": "Loading...",
@@ -155,14 +157,14 @@ export const translations: Translations = {
     
     // Navigation
     "home": "الرئيسية",
-    "allProducts": "جميع المنتجات",
+    "allProductsNav": "جميع المنتجات",
     "electronics": "الإلكترونيات",
     "fashion": "الأزياء",
     "homeAndGarden": "المنزل والحديقة",
     "beauty": "الجمال",
     "sports": "الرياضة",
     "toys": "الألعاب",
-    "bestSellers": "الأكثر مبيعًا",
+    "bestSellersNav": "الأكثر مبيعًا",
     
     // Hero
     "heroTitle": "تسوق أحدث المجموعات",
@@ -258,6 +260,8 @@ export const translations: Translations = {
     "fullName": "الاسم الكامل",
     "username": "اسم المستخدم",
     "signupTitle": "إنشاء حساب",
+    "orContinueWith": "أو استمر باستخدام",
+    "continueWithGoogle": "متابعة باستخدام جوجل",
     
     // Miscellaneous
     "loading": "جاري التحميل...",
