@@ -55,12 +55,12 @@ export default function MainLayout({ children }: MainLayoutProps) {
           <div className="flex justify-between items-center flex-wrap">
             {/* Logo */}
             <Link href="/">
-              <a className="text-2xl font-bold text-primary flex items-center gap-2">
+              <div className="text-2xl font-bold text-primary flex items-center gap-2 cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
                 EchoShop
-              </a>
+              </div>
             </Link>
             
             {/* Search Bar */}
@@ -82,10 +82,10 @@ export default function MainLayout({ children }: MainLayoutProps) {
               {user ? (
                 <>
                   <Link href="/profile">
-                    <a className="bg-secondary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors duration-300 flex items-center gap-1">
+                    <div className="bg-secondary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors duration-300 flex items-center gap-1 cursor-pointer">
                       <User className="h-4 w-4" />
                       {user.displayName}
-                    </a>
+                    </div>
                   </Link>
                   <Button 
                     variant="destructive" 
@@ -100,23 +100,23 @@ export default function MainLayout({ children }: MainLayoutProps) {
               ) : (
                 <>
                   <Link href="/login">
-                    <a className="bg-secondary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors duration-300 flex items-center gap-1">
+                    <div className="bg-secondary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors duration-300 flex items-center gap-1 cursor-pointer">
                       <User className="h-4 w-4" />
                       {t("login")}
-                    </a>
+                    </div>
                   </Link>
                   <Link href="/signup">
-                    <a className="bg-secondary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors duration-300">
+                    <div className="bg-secondary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors duration-300 cursor-pointer">
                       {t("signup")}
-                    </a>
+                    </div>
                   </Link>
                 </>
               )}
               <Link href="/cart">
-                <a className="bg-secondary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors duration-300 flex items-center gap-1">
+                <div className="bg-secondary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors duration-300 flex items-center gap-1 cursor-pointer">
                   <ShoppingCart className="h-4 w-4" />
                   {t("cart")} ({cartItems.length})
-                </a>
+                </div>
               </Link>
               <LanguageSwitcher />
             </nav>
@@ -128,14 +128,14 @@ export default function MainLayout({ children }: MainLayoutProps) {
       <div className="bg-mediumBlue shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-2 flex overflow-x-auto whitespace-nowrap gap-4">
           <Link href="/">
-            <a className="text-white hover:text-primary transition-colors duration-200">{t("home")}</a>
+            <div className="text-white hover:text-primary transition-colors duration-200 cursor-pointer">{t("home")}</div>
           </Link>
           <Link href="/products">
-            <a className="text-white hover:text-primary transition-colors duration-200">{t("allProducts")}</a>
+            <div className="text-white hover:text-primary transition-colors duration-200 cursor-pointer">{t("allProductsNav")}</div>
           </Link>
           {categories.map((category) => (
             <Link key={category.name} href={category.href}>
-              <a className="text-white hover:text-primary transition-colors duration-200">{t(category.name)}</a>
+              <div className="text-white hover:text-primary transition-colors duration-200 cursor-pointer">{t(category.name)}</div>
             </Link>
           ))}
         </div>
