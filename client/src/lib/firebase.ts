@@ -40,6 +40,45 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
+// Create test user if not exists
+export const createTestUserIfNotExists = async () => {
+  try {
+    // Check if test user already exists
+    const testEmail = "test@echoshop.com";
+    const testPassword = "123456";
+    
+    try {
+      // Try to sign in with test credentials
+      await signInWithEmailAndPassword(auth, testEmail, testPassword);
+      console.log("Test user already exists");
+    } catch (error: any) {
+      // If user doesn't exist, create it
+      if (error.code === "auth/user-not-found") {
+        const userCredential = await createUserWithEmailAndPassword(auth, testEmail, testPassword);
+        await updateProfile(userCredential.user, { displayName: "مستخدم اختبار" });
+        
+        // Store additional user data in Firestore
+        await setDoc(doc(db, "users", userCredential.user.uid), {
+          username: "مستخدم اختبار",
+          email: testEmail,
+          role: "customer",
+          createdAt: new Date(),
+          settings: {}
+        });
+        
+        console.log("Test user created successfully");
+      } else {
+        console.error("Error checking test user:", error);
+      }
+    }
+    
+    // Sign out to not affect current session
+    await signOut(auth);
+  } catch (error) {
+    console.error("Error creating test user:", error);
+  }
+};
+
 // Auth functions
 export const registerUser = async (email: string, password: string, username: string) => {
   try {
