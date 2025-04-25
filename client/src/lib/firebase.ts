@@ -43,48 +43,58 @@ const storage = getStorage(app);
 // Create test user if not exists
 export const createTestUserIfNotExists = async () => {
   try {
-    // Check if test user already exists
+    // We'll use a more direct approach
     const testEmail = "test@echoshop.com";
     const testPassword = "123456";
     
     try {
-      // Check if test user exists by querying Firestore directly
-      const usersCollectionRef = collection(db, "users");
-      const q = query(usersCollectionRef, where("email", "==", testEmail));
-      const querySnapshot = await getDocs(q);
-      
-      if (!querySnapshot.empty) {
-        console.log("Test user already exists");
-        return;
-      }
-      
-      // User doesn't exist, create it
-      const userCredential = await createUserWithEmailAndPassword(auth, testEmail, testPassword);
-      await updateProfile(userCredential.user, { displayName: "مستخدم اختبار" });
-      
-      // Store additional user data in Firestore
-      await setDoc(doc(db, "users", userCredential.user.uid), {
-        username: "مستخدم اختبار",
-        email: testEmail,
-        role: "customer",
-        createdAt: new Date(),
-        settings: {}
-      });
-      
-      console.log("Test user created successfully");
-      
-      // Sign out to not affect current session
-      await signOut(auth);
+      // Try to create the test user
+      await createUserWithEmailAndPassword(auth, testEmail, testPassword)
+        .then(async (userCredential) => {
+          // Update user profile
+          await updateProfile(userCredential.user, { 
+            displayName: "مستخدم اختبار" 
+          });
+          
+          // Store additional user data in Firestore
+          await setDoc(doc(db, "users", userCredential.user.uid), {
+            username: "مستخدم اختبار",
+            email: testEmail,
+            role: "customer",
+            createdAt: new Date(),
+            settings: {}
+          });
+          
+          console.log("Test user created successfully");
+          
+          // Sign out after creating
+          return signOut(auth);
+        });
     } catch (error: any) {
-      // Firebase might throw an error if the user already exists
+      // If user already exists, this is fine
       if (error.code === "auth/email-already-in-use") {
-        console.log("Test user already exists (from Firebase error)");
+        console.log("Test user already exists");
       } else {
-        console.error("Error checking test user:", error);
+        console.error("Error creating test user:", error);
       }
     }
   } catch (error) {
-    console.error("Error creating test user:", error);
+    console.error("Error in test user function:", error);
+  }
+};
+
+// Login with test user (for development only)
+export const loginWithTestUser = async () => {
+  const testEmail = "test@echoshop.com";
+  const testPassword = "123456";
+  
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, testEmail, testPassword);
+    console.log("Logged in with test user successfully");
+    return userCredential.user;
+  } catch (error) {
+    console.error("Error logging in with test user:", error);
+    throw error;
   }
 };
 
