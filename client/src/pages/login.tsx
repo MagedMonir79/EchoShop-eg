@@ -204,7 +204,7 @@ export default function Login() {
               </div>
             </div>
             
-            <div className="mt-6">
+            <div className="mt-6 space-y-3">
               <Button
                 type="button"
                 variant="outline"
@@ -214,6 +214,17 @@ export default function Login() {
               >
                 <FcGoogle className="mr-2 h-5 w-5" />
                 {isGoogleLoading ? t("loading") : t("continueWithGoogle")}
+              </Button>
+              
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full bg-darkBlue border-gray-700 hover:bg-emerald-900 border-emerald-700"
+                onClick={handleTestLogin}
+                disabled={isTestLoading}
+              >
+                <FaUserCheck className="mr-2 h-5 w-5 text-emerald-500" />
+                {isTestLoading ? t("loading") : "تسجيل الدخول بحساب الاختبار"}
               </Button>
             </div>
           </div>
