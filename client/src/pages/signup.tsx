@@ -181,9 +181,9 @@ export default function Signup() {
           <div className="mt-6 text-center">
             <p className="text-gray-400">
               {t("alreadyHaveAccount")}{" "}
-              <Link href="/login">
-                <a className="text-blue-400 hover:underline">{t("login")}</a>
-              </Link>
+              <Button variant="link" size="sm" className="text-blue-400 p-0 h-auto" asChild>
+                <Link href="/login">{t("login")}</Link>
+              </Button>
             </p>
           </div>
         </div>
