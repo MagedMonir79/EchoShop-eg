@@ -54,14 +54,12 @@ export default function MainLayout({ children }: MainLayoutProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center flex-wrap">
             {/* Logo */}
-            <Link href="/">
-              <div className="text-2xl font-bold text-primary flex items-center gap-2 cursor-pointer">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-                EchoShop
-              </div>
-            </Link>
+            <div className="text-2xl font-bold text-primary flex items-center gap-2 cursor-pointer" onClick={() => window.location.href = "/"}>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+              EchoShop
+            </div>
             
             {/* Search Bar */}
             <div className="order-3 md:order-2 w-full md:w-1/3 mt-4 md:mt-0">
@@ -81,12 +79,13 @@ export default function MainLayout({ children }: MainLayoutProps) {
             <nav className="order-2 md:order-3 flex items-center space-x-3">
               {user ? (
                 <>
-                  <Link href="/profile">
-                    <div className="bg-secondary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors duration-300 flex items-center gap-1 cursor-pointer">
-                      <User className="h-4 w-4" />
-                      {user.displayName}
-                    </div>
-                  </Link>
+                  <div 
+                    className="bg-secondary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors duration-300 flex items-center gap-1 cursor-pointer"
+                    onClick={() => window.location.href = "/profile"}
+                  >
+                    <User className="h-4 w-4" />
+                    {user.displayName}
+                  </div>
                   <Button 
                     variant="destructive" 
                     size="sm" 
@@ -99,25 +98,28 @@ export default function MainLayout({ children }: MainLayoutProps) {
                 </>
               ) : (
                 <>
-                  <Link href="/login">
-                    <div className="bg-secondary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors duration-300 flex items-center gap-1 cursor-pointer">
-                      <User className="h-4 w-4" />
-                      {t("login")}
-                    </div>
-                  </Link>
-                  <Link href="/signup">
-                    <div className="bg-secondary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors duration-300 cursor-pointer">
-                      {t("signup")}
-                    </div>
-                  </Link>
+                  <div 
+                    className="bg-secondary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors duration-300 flex items-center gap-1 cursor-pointer"
+                    onClick={() => window.location.href = "/login"}
+                  >
+                    <User className="h-4 w-4" />
+                    {t("login")}
+                  </div>
+                  <div 
+                    className="bg-secondary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors duration-300 cursor-pointer"
+                    onClick={() => window.location.href = "/signup"}
+                  >
+                    {t("signup")}
+                  </div>
                 </>
               )}
-              <Link href="/cart">
-                <div className="bg-secondary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors duration-300 flex items-center gap-1 cursor-pointer">
-                  <ShoppingCart className="h-4 w-4" />
-                  {t("cart")} ({cartItems.length})
-                </div>
-              </Link>
+              <div 
+                className="bg-secondary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors duration-300 flex items-center gap-1 cursor-pointer"
+                onClick={() => window.location.href = "/cart"}
+              >
+                <ShoppingCart className="h-4 w-4" />
+                {t("cart")} ({cartItems.length})
+              </div>
               <LanguageSwitcher />
             </nav>
           </div>
@@ -127,16 +129,26 @@ export default function MainLayout({ children }: MainLayoutProps) {
       {/* Secondary Nav */}
       <div className="bg-mediumBlue shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-2 flex overflow-x-auto whitespace-nowrap gap-4">
-          <Link href="/">
-            <div className="text-white hover:text-primary transition-colors duration-200 cursor-pointer">{t("home")}</div>
-          </Link>
-          <Link href="/products">
-            <div className="text-white hover:text-primary transition-colors duration-200 cursor-pointer">{t("allProductsNav")}</div>
-          </Link>
+          <div 
+            className="text-white hover:text-primary transition-colors duration-200 cursor-pointer"
+            onClick={() => window.location.href = "/"}
+          >
+            {t("home")}
+          </div>
+          <div 
+            className="text-white hover:text-primary transition-colors duration-200 cursor-pointer"
+            onClick={() => window.location.href = "/products"}
+          >
+            {t("allProductsNav")}
+          </div>
           {categories.map((category) => (
-            <Link key={category.name} href={category.href}>
-              <div className="text-white hover:text-primary transition-colors duration-200 cursor-pointer">{t(category.name)}</div>
-            </Link>
+            <div 
+              key={category.name}
+              className="text-white hover:text-primary transition-colors duration-200 cursor-pointer"
+              onClick={() => window.location.href = category.href}
+            >
+              {t(category.name)}
+            </div>
           ))}
         </div>
       </div>
