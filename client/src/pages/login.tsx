@@ -102,7 +102,14 @@ export default function Login() {
             <LanguageSwitcher />
           </div>
           
-          <h2 className="text-2xl font-bold mb-6 text-center">{t("loginTitle")}</h2>
+          <h2 className="text-2xl font-bold mb-4 text-center">{t("loginTitle")}</h2>
+          
+          {/* Info box for testing - this will be removed in production */}
+          <div className="mb-6 p-3 bg-darkBlue/50 rounded-md border border-primary/20 text-sm">
+            <p className="mb-1 text-primary/90"><span className="font-bold">للاختبار</span>: يمكنك استخدام الحساب التالي</p>
+            <p><span className="font-semibold text-gray-400">البريد الإلكتروني:</span> test@echoshop.com</p>
+            <p><span className="font-semibold text-gray-400">كلمة المرور:</span> 123456</p>
+          </div>
           
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -188,9 +195,9 @@ export default function Login() {
           <div className="mt-6 text-center">
             <p className="text-gray-400">
               {t("dontHaveAccount")}{" "}
-              <Link href="/signup">
-                <a className="text-blue-400 hover:underline">{t("createAccount")}</a>
-              </Link>
+              <Button variant="link" size="sm" className="text-blue-400 p-0 h-auto" asChild>
+                <Link href="/signup">{t("createAccount")}</Link>
+              </Button>
             </p>
           </div>
         </div>

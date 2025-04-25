@@ -6,6 +6,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/context/language-context";
 import { AuthProvider } from "@/context/auth-context";
 import { CartProvider } from "@/context/cart-context";
+import { useEffect } from "react";
+import { createTestUserIfNotExists } from "@/lib/firebase";
 
 // Pages
 import Home from "@/pages/home";
@@ -40,6 +42,17 @@ function Router() {
   );
 }
 
+function AppWithProviders() {
+  // Create test user for login functionality
+  useEffect(() => {
+    createTestUserIfNotExists().catch(error => {
+      console.error("Failed to create test user:", error);
+    });
+  }, []);
+
+  return <Router />;
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -48,7 +61,7 @@ function App() {
           <AuthProvider>
             <CartProvider>
               <Toaster />
-              <Router />
+              <AppWithProviders />
             </CartProvider>
           </AuthProvider>
         </LanguageProvider>
