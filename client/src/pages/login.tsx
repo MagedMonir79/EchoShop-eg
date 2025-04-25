@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { FcGoogle } from "react-icons/fc";
+import { FaUserCheck } from "react-icons/fa";
 import LanguageSwitcher from "@/components/ui/language-switcher";
 
 // Form schema
@@ -30,11 +31,12 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function Login() {
   const { t, language } = useContext(LanguageContext);
-  const { login, loginWithGoogle } = useContext(AuthContext);
+  const { login, loginWithGoogle, loginWithTestAccount } = useContext(AuthContext);
   const { toast } = useToast();
   const [, navigate] = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isTestLoading, setIsTestLoading] = useState(false);
 
   // Initialize form
   const form = useForm<LoginFormValues>({
@@ -83,6 +85,30 @@ export default function Login() {
         variant: "destructive",
       });
       setIsGoogleLoading(false);
+    }
+  };
+  
+  // Test account login handler
+  const handleTestLogin = async () => {
+    setIsTestLoading(true);
+    
+    try {
+      await loginWithTestAccount();
+      
+      toast({
+        title: t("success"),
+        description: "تم تسجيل الدخول بنجاح باستخدام حساب الاختبار",
+      });
+      
+      navigate("/");
+    } catch (error: any) {
+      toast({
+        title: t("error"),
+        description: error.message || "فشل تسجيل الدخول باستخدام حساب الاختبار.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsTestLoading(false);
     }
   };
 

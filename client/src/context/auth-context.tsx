@@ -7,7 +7,8 @@ import {
   getCurrentUser, 
   getUserData,
   signInWithGoogle,
-  handleGoogleRedirect
+  handleGoogleRedirect,
+  loginWithTestUser
 } from "@/lib/firebase";
 
 interface AuthContextProps {
@@ -17,6 +18,7 @@ interface AuthContextProps {
   register: (email: string, password: string, username: string) => Promise<User>;
   login: (email: string, password: string) => Promise<User>;
   loginWithGoogle: () => Promise<void>;
+  loginWithTestAccount: () => Promise<User>;
   logout: () => Promise<void>;
 }
 
@@ -27,6 +29,7 @@ export const AuthContext = createContext<AuthContextProps>({
   register: async () => ({ uid: "" } as User),
   login: async () => ({ uid: "" } as User),
   loginWithGoogle: async () => {},
+  loginWithTestAccount: async () => ({ uid: "" } as User),
   logout: async () => {},
 });
 
@@ -98,6 +101,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       throw error;
     }
   };
+  
+  const loginWithTestAccount = async () => {
+    try {
+      const testUser = await loginWithTestUser();
+      setUser(testUser);
+      
+      const data = await getUserData(testUser.uid);
+      setUserData(data);
+      
+      return testUser;
+    } catch (error) {
+      console.error("Error logging in with test account:", error);
+      throw error;
+    }
+  };
 
   const logout = async () => {
     try {
@@ -135,7 +153,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       loading, 
       register, 
       login,
-      loginWithGoogle, 
+      loginWithGoogle,
+      loginWithTestAccount,
       logout 
     }}>
       {children}
