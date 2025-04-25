@@ -91,14 +91,14 @@ export default function Login() {
       <div className="w-full max-w-md">
         <div className="bg-mediumBlue rounded-lg shadow-lg p-8">
           <div className="flex justify-between items-center mb-6">
-            <Link href="/">
-              <a className="text-2xl font-bold text-primary flex items-center gap-2">
+            <Button variant="link" className="p-0" asChild>
+              <Link href="/" className="text-2xl font-bold text-primary flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
                 EchoShop
-              </a>
-            </Link>
+              </Link>
+            </Button>
             <LanguageSwitcher />
           </div>
           
@@ -132,9 +132,9 @@ export default function Login() {
                   <FormItem>
                     <div className="flex justify-between items-center">
                       <FormLabel>{t("password")}</FormLabel>
-                      <Link href="/forgot-password">
-                        <a className="text-sm text-blue-400 hover:underline">{t("forgotPassword")}</a>
-                      </Link>
+                      <Button variant="link" size="sm" className="text-blue-400 p-0 h-auto" asChild>
+                        <Link href="/forgot-password">{t("forgotPassword")}</Link>
+                      </Button>
                     </div>
                     <FormControl>
                       <Input 
