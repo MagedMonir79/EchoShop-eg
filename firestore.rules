@@ -1,0 +1,74 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // قواعد للمستخدمين
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // قواعد لملف التعريف للبائعين
+    match /sellerProfiles/{profileId} {
+      allow read: if true;
+      allow create, update: if request.auth != null;
+      allow delete: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // قواعد للمنتجات
+    match /products/{productId} {
+      allow read: if true;  // يسمح لأي شخص بعرض المنتجات
+      allow create, update: if request.auth != null && 
+                           (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+                            get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'seller');
+      allow delete: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // قواعد للفئات
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // قواعد للموردين
+    match /suppliers/{supplierId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // قواعد للطلبات
+    match /orders/{orderId} {
+      allow read: if request.auth != null && 
+                  (resource.data.userId == request.auth.uid || 
+                   get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin');
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && 
+                    (resource.data.userId == request.auth.uid || 
+                     get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin');
+      allow delete: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // قواعد لعناصر الطلبات
+    match /orderItems/{itemId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // قواعد للسلة
+    match /carts/{cartId} {
+      allow read, write: if request.auth != null && resource.data.userId == request.auth.uid;
+    }
+    
+    // قواعد لعناصر السلة
+    match /cartItems/{itemId} {
+      allow read, write: if request.auth != null && get(/databases/$(database)/documents/carts/$(resource.data.cartId)).data.userId == request.auth.uid;
+    }
+    
+    // قواعد للإعدادات
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+  }
+}

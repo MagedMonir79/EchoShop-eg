@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - EchoShop</title>
+  <link rel="stylesheet" href="dashboard-style.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #0f172a, #1e293b);
+      color: white;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: #020617;
+      flex-wrap: wrap;
+    }
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #a3e635;
+    }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    nav a {
+      background-color: #2563eb;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    nav a.back-btn {
+      background-color: #22c55e;
+      color: black;
+    }
+    .container {
+      max-width: 800px;
+      margin: 60px auto;
+      background-color: #1e293b;
+      padding: 30px;
+      border-radius: 12px;
+    }
+    h1 {
+      text-align: center;
+      color: #3b82f6;
+      margin-bottom: 30px;
+    }
+    p {
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+  </style>
+  <script>
+    function goBack() {
+      window.history.back();
+    }
+  </script>
+</head>
+<body>
+  <header>
+    <div class="logo">EchoShop</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="orders.html">Orders</a>
+      <a href="settings.html">Settings</a>
+      <a href="contact.html">Contact</a>
+      <a href="about.html">About Us</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="register.html">Register as Seller</a>
+      <a href="add-product.html">Add Product</a>
+      <a href="login.html">Login</a>
+      <a href="signup.html">Sign Up</a>
+      <a href="#" class="back-btn" onclick="goBack()">Back</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h1>About Us</h1>
+    <p>EchoShop is an innovative e-commerce platform designed to connect sellers and buyers in a simple and secure way. We aim to empower everyone to showcase and sell their products easily, offering a distinctive user experience with both Arabic and English interfaces.</p>
+    <p>We believe in the power of digital commerce to improve people’s lives. That’s why we provide advanced tools for sellers such as a smart dashboard, order tracking system, and performance analytics. For buyers, we ensure smooth browsing, multiple payment options, and a joyful shopping experience.</p>
+    <p>Our goal is to become the leading e-commerce platform in the Arab world by building strong trust with users and delivering exceptional customer service.</p>
+  </div>
+</body>
+</html>

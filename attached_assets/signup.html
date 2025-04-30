@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - EchoShop</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD7pP9iS6KuC3v7WXZc7HtAgfS_hE2Gm9o",
+      authDomain: "echoshop-de4a2.firebaseapp.com",
+      projectId: "echoshop-de4a2",
+      storageBucket: "echoshop-de4a2.appspot.com",
+      messagingSenderId: "520031479136",
+      appId: "1:520031479136:web:c13b15240347b834e46a05"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("signupForm");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const confirm = document.getElementById("confirm").value;
+        const role = document.getElementById("role").value;
+
+        if (password !== confirm) {
+          alert("Passwords do not match.");
+          return;
+        }
+
+        auth.createUserWithEmailAndPassword(email, password)
+          .then((userCredential) => {
+            const user = userCredential.user;
+            return db.collection("users").doc(user.uid).set({
+              email: email,
+              role: role
+            });
+          })
+          .then(() => {
+            alert("Account created and saved successfully!");
+            if (role === "client") {
+              window.location.href = "index.html";
+            } else if (role === "seller") {
+              window.location.href = "seller-register.html";
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert("Error: " + error.message);
+          });
+      });
+    });
+  </script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #0f172a, #1e3a8a);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+    .signup-box {
+      background-color: #1e293b;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+    }
+    .back-btn {
+      position: absolute;
+      top: -45px;
+      left: 0;
+      background-color: #22c55e;
+      color: black;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .logo {
+      display: block;
+      margin: 0 auto 1.2rem;
+      width: 120px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #a3e635;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.7rem;
+      margin-bottom: 1rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    button {
+      width: 100%;
+      padding: 0.8rem;
+      background-color: #2563eb;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #1d4ed8;
+    }
+    .login-link, .lang-toggle {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    .login-link a, .lang-toggle a {
+      color: #38bdf8;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .login-link a:hover, .lang-toggle a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="signup-box">
+    <a class="back-btn" href="index.html">🔙 Back</a>
+    <img src="https://cdn-icons-png.flaticon.com/512/891/891419.png" alt="EchoShop Logo" class="logo" />
+    <h2>Create a New Account</h2>
+    <form id="signupForm">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" placeholder="John Doe" required>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="you@example.com" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="********" required>
+
+      <label for="confirm">Confirm Password</label>
+      <input type="password" id="confirm" placeholder="********" required>
+
+      <label for="role">User Type</label>
+      <select id="role" required>
+        <option value="">-- Select --</option>
+        <option value="client">Client</option>
+        <option value="seller">Seller</option>
+      </select>
+
+      <button type="submit">Sign Up</button>
+    </form>
+
+    <div class="login-link">
+      <a href="login.html">Already have an account? Log in</a>
+    </div>
+
+    <div class="lang-toggle">
+      <a href="signup-ar.html">العربية</a>
+    </div>
+  </div>
+</body>
+</html>

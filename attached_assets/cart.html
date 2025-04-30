@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart - EchoShop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(to bottom right, #0f172a, #1e293b);
+      color: white;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #020617;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .logo {
+      font-size: 1.6rem;
+      color: #a3e635;
+      font-weight: bold;
+    }
+    nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    nav a {
+      background-color: #2563eb;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    nav a:hover {
+      background-color: #1d4ed8;
+    }
+    .main {
+      max-width: 700px;
+      margin: 50px auto;
+      background-color: #1e293b;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+    .main h1 {
+      color: #3b82f6;
+      margin-bottom: 20px;
+    }
+    .main p {
+      margin-bottom: 30px;
+      color: #cbd5e1;
+    }
+    .main a {
+      background-color: #22c55e;
+      color: black;
+      padding: 10px 20px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+  </style>
+  <script>
+    function logout() {
+      alert("You have been logged out.");
+      window.location.href = "index.html";
+    }
+    function goBack() {
+      window.history.back();
+    }
+  </script>
+</head>
+<body>
+  <header>
+    <div class="logo">EchoShop</div>
+    <nav>
+      <a href="products.html">View Products</a>
+      <a href="#" onclick="goBack()" style="background-color: #22c55e; color: black;">Back</a>
+      <a href="#" onclick="logout()" style="background-color: #ef4444;">Logout</a>
+    </nav>
+  </header>
+
+  <div class="main">
+    <h1>Your Cart</h1>
+    <p>No items in your cart yet.</p>
+    <a href="products.html">Continue Shopping</a>
+  </div>
+</body>
+</html>

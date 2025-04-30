@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EchoShop - Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(to bottom right, #0f172a, #1e3a8a);
+      color: white;
+    }
+
+    header {
+      background-color: #0f172a;
+      padding: 15px 0;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #a3e635;
+      text-decoration: none;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    nav a {
+      background-color: #2563eb;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: background-color 0.3s;
+    }
+
+    nav a:hover {
+      background-color: #1d4ed8;
+    }
+
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4rem 2rem;
+      flex-wrap: wrap;
+    }
+
+    .hero-text {
+      max-width: 550px;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      color: #cbd5e1;
+    }
+
+    .shop-btn {
+      background-color: #a3e635;
+      color: black;
+      font-weight: bold;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 0 20px #a3e635;
+    }
+
+    .hero-img {
+      width: 320px;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    .banners, .featured-categories {
+      text-align: center;
+      margin: 2rem 0;
+    }
+
+    .banners img, .featured-categories img {
+      max-width: 95%;
+      margin-bottom: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    .sections {
+      padding: 2rem;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .product-card {
+      background-color: #1e293b;
+      padding: 1rem;
+      border-radius: 10px;
+      text-align: center;
+      transition: transform 0.3s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .product-card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+    }
+
+    .product-card h4 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .flash-deals, .most-wished, .ads-section {
+      margin: 2rem 0;
+    }
+
+    .testimonials {
+      padding: 2rem;
+      background-color: #1e293b;
+      border-radius: 10px;
+      margin: 2rem auto;
+      max-width: 1000px;
+      text-align: center;
+    }
+
+    .testimonial {
+      margin-bottom: 1rem;
+      font-style: italic;
+      color: #cbd5e1;
+    }
+
+    .help-section {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .help-section a {
+      color: #60a5fa;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      background-color: #0f172a;
+      padding: 2rem;
+      margin-top: 3rem;
+      color: #94a3b8;
+    }
+
+    .floating-whatsapp {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background-color: #25d366;
+      color: white;
+      padding: 0.6rem 1rem;
+      border-radius: 50px;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      text-decoration: none;
+      z-index: 999;
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        flex-direction: column;
+        text-align: center;
+      }
+      .hero-img {
+        margin-top: 2rem;
+        width: 90%;
+      }
+      nav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <a href="index.html" class="logo">EchoShop</a>
+      <nav>
+        <a href="login.html">Login</a>
+        <a href="signup.html">Sign Up</a>
+        <a href="contact.html">Help</a>
+        <a href="index-ar.html">Arabic</a>
+        <a href="home-new.html" style="background-color: #1d4ed8;">New Design</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-text">
+      <h1>Shop the latest collections</h1>
+      <p>Discover great deals and top quality products for all your needs.</p>
+      <button class="shop-btn" onclick="location.href='products.html'">Shop Now</button>
+    </div>
+    <img class="hero-img" src="https://images.unsplash.com/photo-1606813902884-f7e35a1f4763" alt="Shopping Banner">
+  </section>
+
+  <section class="banners">
+    <img src="https://images.unsplash.com/photo-1606813902884-f7e35a1f4763" alt="Main Banner">
+    <img src="https://images.unsplash.com/photo-1602524201160-762f8eabf9c4" alt="Promo Banner">
+  </section>
+
+  <section class="featured-categories">
+    <div class="section-title">Popular Categories</div>
+    <div class="products-grid">
+      <div class="product-card">
+        <img src="https://images.unsplash.com/photo-1600180758890-42003f2c8a58" alt="Shoes">
+        <h4>Shoes</h4>
+      </div>
+      <div class="product-card">
+        <img src="https://images.unsplash.com/photo-1578898884018-a9a6cfd382d3" alt="Smartwatch">
+        <h4>Smartwatch</h4>
+      </div>
+      <div class="product-card">
+        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff" alt="Laptop">
+        <h4>Laptops</h4>
+      </div>
+      <div class="product-card">
+        <img src="https://images.unsplash.com/photo-1602524201160-762f8eabf9c4" alt="Kitchen">
+        <h4>Kitchen Tools</h4>
+      </div>
+    </div>
+  </section>
+
+  <section class="flash-deals">
+    <div class="section-title">Flash Deals</div>
+    <div class="products-grid">
+      <div class="product-card">
+        <img src="https://images.unsplash.com/photo-1600180758890-42003f2c8a58" alt="Running Shoes">
+        <h4>Running Shoes - 40% Off</h4>
+      </div>
+      <div class="product-card">
+        <img src="https://images.unsplash.com/photo-1606813902969-9449b09b52de" alt="Headphones">
+        <h4>Wireless Headphones - 30% Off</h4>
+      </div>
+    </div>
+  </section>
+
+  <section class="ads-section">
+    <div class="section-title">Sponsored</div>
+    <img src="https://images.unsplash.com/photo-1581090700227-1c517c0d1f0c" alt="Ad Banner">
+  </section>
+
+  <section class="most-wished">
+    <div class="section-title">Most Wished For</div>
+    <div class="products-grid">
+      <div class="product-card">
+        <img src="https://images.unsplash.com/photo-1578898884018-a9a6cfd382d3" alt="Gadget">
+        <h4>Gaming Keyboard</h4>
+      </div>
+      <div class="product-card">
+        <img src="https://images.unsplash.com/photo-1606813902955-5e895b8eb813" alt="Controller">
+        <h4>Game Controller</h4>
+      </div>
+    </div>
+  </section>
+
+  <section class="testimonials">
+    <h3>What our customers say</h3>
+    <p class="testimonial">"Great quality and fast delivery! Highly recommended." - Sarah A.</p>
+    <p class="testimonial">"Amazing customer service and awesome products." - John M.</p>
+  </section>
+
+  <section class="help-section">
+    <p>Need assistance? <a href="contact.html">Contact us here</a>.</p>
+  </section>
+
+  <footer>
+    &copy; 2025 Echo. All rights reserved.
+  </footer>
+
+  <a href="https://wa.me/201234567890" class="floating-whatsapp" target="_blank">WhatsApp Support</a>
+
+</body>
+</html>

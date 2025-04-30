@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us - EchoShop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #0f172a;
+      color: white;
+      margin: 0;
+    }
+    header {
+      background-color: #1e293b;
+      padding: 1rem 2rem;
+      text-align: center;
+      font-size: 1.5rem;
+      color: #a3e635;
+      font-weight: bold;
+      position: relative;
+    }
+    .logout-btn, .back-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 5px 14px;
+      font-size: 0.85rem;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
+    }
+    .logout-btn {
+      right: 20px;
+      background-color: #ef4444;
+      color: white;
+    }
+    .back-btn {
+      left: 20px;
+      background-color: #22c55e;
+      color: black;
+    }
+    .container {
+      max-width: 700px;
+      margin: 2rem auto;
+      background-color: #1e293b;
+      padding: 2rem;
+      border-radius: 10px;
+    }
+    h2 {
+      color: #60a5fa;
+      margin-bottom: 1.5rem;
+    }
+    label {
+      display: block;
+      margin: 1rem 0 0.5rem;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 0.7rem;
+      border: none;
+      border-radius: 6px;
+    }
+    .submit-btn {
+      background-color: #3b82f6;
+      color: white;
+      font-weight: bold;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: 30px;
+      cursor: pointer;
+      margin-top: 2rem;
+    }
+    .submit-btn:hover {
+      background-color: #2563eb;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background-color: #0f172a;
+      color: #64748b;
+      margin-top: 2rem;
+    }
+  </style>
+  <script>
+    function logout() {
+      alert("You have been logged out.");
+      window.location.href = "index.html";
+    }
+    function goBack() {
+      window.history.back();
+    }
+  </script>
+</head>
+<body>
+  <header>
+    <a class="back-btn" href="#" onclick="goBack()">🔙 Back</a>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+    Contact Us - EchoShop
+  </header>
+
+  <div class="container">
+    <h2>Send us a message</h2>
+    <form>
+      <label for="fullname">Full Name</label>
+      <input type="text" id="fullname" placeholder="Enter your full name" required>
+
+      <label for="email">Email Address</label>
+      <input type="email" id="email" placeholder="example@email.com" required>
+
+      <label for="message">Message</label>
+      <textarea id="message" rows="5" placeholder="Write your message here..." required></textarea>
+
+      <button type="submit" class="submit-btn">📨 Send Message</button>
+    </form>
+  </div>
+
+  <footer>
+    &copy; 2025 EchoShop. All rights reserved.
+  </footer>
+</body>
+</html>

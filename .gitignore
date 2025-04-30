@@ -1,0 +1,30 @@
+
+# Dependencies
+node_modules
+dist
+.DS_Store
+server/public
+
+# Environment
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Firebase
+.firebase/
+firebase-debug.log*
+
+# Build
+*.log
+.next
+out
+build
+dist
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo

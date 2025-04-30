@@ -1,0 +1,3137 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Dashboard - EchoShop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* Header Styles */
+    header {
+      background-color: #0a2647;
+      color: white;
+      padding: 12px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .header-container {
+      max-width: 1280px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 15px;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #ffffff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo i {
+      margin-right: 10px;
+      color: #0e86d4;
+    }
+
+    .user-nav {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #0e86d4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .user-name {
+      font-weight: 500;
+    }
+
+    .logout-btn {
+      background-color: #ef4444;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    /* Main Layout */
+    .dashboard-container {
+      display: flex;
+      max-width: 1280px;
+      margin: 20px auto;
+      gap: 20px;
+      padding: 0 15px;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+
+    .user-profile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 20px;
+    }
+
+    .user-profile-pic {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: #0e86d4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: white;
+      margin-bottom: 15px;
+    }
+
+    .user-profile-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .user-profile-email {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .user-status {
+      background-color: #dcfce7;
+      color: #166534;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .nav-menu {
+      list-style: none;
+    }
+
+    .nav-menu li {
+      margin-bottom: 10px;
+    }
+
+    .nav-menu a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 6px;
+      color: #0f172a;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+
+    .nav-menu a:hover, .nav-menu a.active {
+      background-color: #f1f5f9;
+    }
+
+    .nav-menu a.active {
+      color: #0e86d4;
+      font-weight: 500;
+    }
+
+    .nav-menu i {
+      width: 20px;
+      text-align: center;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+    }
+
+    .page-title {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .add-widget-btn {
+      background-color: #0e86d4;
+      color: white;
+      border: none;
+      padding: 7px 15px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    /* Stats Cards */
+    .stats-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .stat-icon.sales {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+
+    .stat-icon.orders {
+      background-color: #dbeafe;
+      color: #1e40af;
+    }
+
+    .stat-icon.products {
+      background-color: #fef9c3;
+      color: #854d0e;
+    }
+
+    .stat-icon.visitors {
+      background-color: #f3e8ff;
+      color: #6b21a8;
+    }
+
+    .stat-info {
+      flex: 1;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    /* Widgets Grid */
+    .widgets-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .widget {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .widget-header {
+      padding: 15px;
+      background-color: #f8fafc;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .widget-title {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .widget-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .widget-action-btn {
+      background: none;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      color: #64748b;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+    }
+
+    .widget-action-btn:hover {
+      background-color: #e2e8f0;
+    }
+
+    .widget-content {
+      padding: 15px;
+    }
+
+    /* Recent Orders Widget */
+    .recent-orders-list {
+      list-style: none;
+    }
+
+    .order-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .order-item:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .order-icon {
+      width: 40px;
+      height: 40px;
+      background-color: #f1f5f9;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      color: #64748b;
+    }
+
+    .order-details {
+      flex: 1;
+    }
+
+    .order-id {
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+
+    .order-date {
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+
+    .order-amount {
+      font-weight: 600;
+    }
+
+    .order-status {
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      margin-right: 10px;
+    }
+
+    .order-status.completed {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+
+    .order-status.pending {
+      background-color: #fef9c3;
+      color: #854d0e;
+    }
+
+    .order-status.processing {
+      background-color: #dbeafe;
+      color: #1e40af;
+    }
+
+    /* Favorites Widget */
+    .favorites-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+      gap: 10px;
+    }
+
+    .favorite-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .favorite-icon {
+      width: 50px;
+      height: 50px;
+      background-color: #f1f5f9;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: #0e86d4;
+      margin-bottom: 8px;
+    }
+
+    .favorite-name {
+      font-size: 0.75rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
+
+    /* Alerts Widget */
+    .alerts-list {
+      list-style: none;
+    }
+
+    .alert-item {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .alert-item:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .alert-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .alert-icon.info {
+      background-color: #dbeafe;
+      color: #1e40af;
+    }
+
+    .alert-icon.warning {
+      background-color: #fef9c3;
+      color: #854d0e;
+    }
+
+    .alert-details {
+      flex: 1;
+    }
+
+    .alert-title {
+      font-weight: 500;
+      margin-bottom: 3px;
+    }
+
+    .alert-desc {
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    .alert-time {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      text-align: right;
+    }
+
+    /* Progress Widget */
+    .progress-items {
+      list-style: none;
+    }
+
+    .progress-item {
+      margin-bottom: 15px;
+    }
+
+    .progress-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .progress-title {
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .progress-percentage {
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background-color: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+    }
+
+    .progress-fill.blue {
+      background-color: #0e86d4;
+    }
+
+    .progress-fill.green {
+      background-color: #22c55e;
+    }
+
+    .progress-fill.orange {
+      background-color: #f59e0b;
+    }
+    
+    /* Support Ticket Styles */
+    .support-intro {
+      margin-bottom: 15px;
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+    
+    .quick-support-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .quick-support-btn {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .quick-support-btn:hover {
+      background-color: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+    
+    .quick-support-btn i {
+      font-size: 1.5rem;
+      color: #0e86d4;
+    }
+    
+    .quick-support-btn span {
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-align: center;
+    }
+    
+    .active-tickets {
+      background-color: #f8fafc;
+      border-radius: 8px;
+      padding: 15px;
+    }
+    
+    .ticket-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .ticket-header h4 {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    
+    .ticket-count {
+      background-color: #0e86d4;
+      color: white;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+    
+    .ticket-item {
+      display: flex;
+      align-items: center;
+      padding-bottom: 10px;
+    }
+    
+    .ticket-icon {
+      width: 36px;
+      height: 36px;
+      background-color: #dbeafe;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      color: #1e40af;
+    }
+    
+    .ticket-details {
+      flex: 1;
+    }
+    
+    .ticket-title {
+      font-weight: 500;
+      font-size: 0.9rem;
+      margin-bottom: 3px;
+    }
+    
+    .ticket-date {
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+    
+    .ticket-status {
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    
+    .ticket-status.pending {
+      background-color: #fef9c3;
+      color: #854d0e;
+    }
+    
+    .ticket-status.processing {
+      background-color: #dbeafe;
+      color: #1e40af;
+    }
+    
+    .ticket-status.completed {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+    
+    /* Price Comparison Widget Styles */
+    .price-comparison-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .comparison-search {
+      position: relative;
+      margin-bottom: 15px;
+    }
+    
+    .comparison-input {
+      width: 100%;
+      padding: 10px 40px 10px 15px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    
+    .comparison-search-btn {
+      position: absolute;
+      right: 5px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #64748b;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    
+    .watched-title {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 15px;
+    }
+    
+    .price-comparison-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .comparison-item {
+      background-color: #f8fafc;
+      border-radius: 8px;
+      padding: 15px;
+    }
+    
+    .comparison-product {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .comparison-img {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-right: 15px;
+    }
+    
+    .comparison-info {
+      flex: 1;
+    }
+    
+    .comparison-name {
+      font-weight: 500;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+    }
+    
+    .comparison-price {
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+    
+    .our-price {
+      color: #0a2647;
+    }
+    
+    .price-comparison-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .comparison-bar-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    
+    .competitor-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+    }
+    
+    .competitor-name {
+      color: #64748b;
+    }
+    
+    .competitor-price {
+      font-weight: 600;
+    }
+    
+    .comparison-bar {
+      height: 8px;
+      background-color: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .comparison-fill {
+      height: 100%;
+      border-radius: 4px;
+    }
+    
+    .comparison-fill.saving {
+      background-color: #22c55e;
+    }
+    
+    .comparison-fill.higher {
+      background-color: #ef4444;
+    }
+    
+    .savings-tag {
+      font-size: 0.75rem;
+      color: #22c55e;
+      font-weight: 500;
+      text-align: right;
+    }
+    
+    .savings-tag.loss {
+      color: #ef4444;
+    }
+    
+    .view-all-btn {
+      background-color: #0e86d4;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 15px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 15px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 0.3s;
+    }
+    
+    .view-all-btn:hover {
+      background-color: #0a6baa;
+    }
+    
+    /* AI Recommendations Widget Styles */
+    .ai-recommendation-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .recommendation-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 5px;
+    }
+    
+    .ai-avatar {
+      width: 48px;
+      height: 48px;
+      background-color: #0e86d4;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: white;
+    }
+    
+    .ai-intro {
+      flex: 1;
+    }
+    
+    .ai-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 3px;
+    }
+    
+    .ai-subtitle {
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+    
+    .ai-tabs {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 2px;
+      gap: 5px;
+    }
+    
+    .ai-tab {
+      background: none;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px 6px 0 0;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #64748b;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    
+    .ai-tab:hover {
+      background-color: #f8fafc;
+      color: #0e86d4;
+    }
+    
+    .ai-tab.active {
+      color: #0e86d4;
+      background-color: #f1f5f9;
+      position: relative;
+    }
+    
+    .ai-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: #0e86d4;
+    }
+    
+    .ai-tab-content {
+      display: none;
+      padding: 15px 0;
+    }
+    
+    .ai-tab-content.active {
+      display: block;
+    }
+    
+    .ai-recommendation-reason {
+      background-color: #f8fafc;
+      padding: 10px 15px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+    }
+    
+    .ai-recommendation-reason i {
+      color: #0e86d4;
+      font-size: 1rem;
+    }
+    
+    .ai-products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    
+    .ai-product-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+    
+    .ai-product-card:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      transform: translateY(-3px);
+    }
+    
+    .ai-product-img-container {
+      position: relative;
+      height: 160px;
+    }
+    
+    .ai-product-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .ai-product-match {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #0e86d4;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 20px;
+    }
+    
+    .ai-product-info {
+      padding: 10px;
+    }
+    
+    .ai-product-name {
+      font-weight: 500;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      height: 42px;
+    }
+    
+    .ai-product-price {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 5px;
+      color: #0a2647;
+    }
+    
+    .ai-product-rating {
+      font-size: 0.8rem;
+      color: #f59e0b;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+    
+    .ai-product-rating span {
+      color: #64748b;
+      margin-left: 3px;
+    }
+    
+    .ai-product-actions {
+      display: flex;
+      padding: 10px;
+      gap: 10px;
+      border-top: 1px solid #e2e8f0;
+    }
+    
+    .ai-view-btn {
+      flex: 1;
+      padding: 6px 12px;
+      background-color: white;
+      border: 1px solid #0e86d4;
+      color: #0e86d4;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .ai-view-btn:hover {
+      background-color: #f1f5f9;
+    }
+    
+    .ai-cart-btn {
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #0e86d4;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .ai-cart-btn:hover {
+      background-color: #0a6baa;
+    }
+    
+    .ai-preferences {
+      padding-top: 15px;
+      border-top: 1px dashed #e2e8f0;
+      text-align: center;
+    }
+    
+    .ai-question {
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+      color: #475569;
+    }
+    
+    .ai-feedback {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .ai-feedback-btn {
+      padding: 6px 12px;
+      border: 1px solid #e2e8f0;
+      background-color: white;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .ai-feedback-btn:hover {
+      background-color: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+    
+    .ai-feedback-btn:first-child:hover {
+      color: #22c55e;
+      border-color: #22c55e;
+    }
+    
+    .ai-feedback-btn:last-child:hover {
+      color: #ef4444;
+      border-color: #ef4444;
+    }
+    
+    /* Trending Tab Styles */
+    .ai-trending-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    
+    .ai-trending-item {
+      display: flex;
+      align-items: center;
+      background-color: #f8fafc;
+      border-radius: 8px;
+      padding: 10px;
+    }
+    
+    .ai-trending-rank {
+      width: 24px;
+      height: 24px;
+      background-color: #0e86d4;
+      border-radius: 50%;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+      margin-right: 10px;
+    }
+    
+    .ai-trending-img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-right: 15px;
+    }
+    
+    .ai-trending-info {
+      flex: 1;
+    }
+    
+    .ai-trending-name {
+      font-weight: 500;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+    }
+    
+    .ai-trending-price {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #0a2647;
+      margin-bottom: 5px;
+    }
+    
+    .ai-trending-meta {
+      display: flex;
+      gap: 15px;
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+    
+    .ai-trending-meta i {
+      margin-right: 5px;
+    }
+    
+    /* Similar Products Tab Styles */
+    .ai-carousel {
+      display: flex;
+      gap: 15px;
+      overflow-x: auto;
+      padding: 10px 0;
+      margin-bottom: 15px;
+      scrollbar-width: none;
+    }
+    
+    .ai-carousel::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .ai-carousel-item {
+      min-width: 150px;
+      max-width: 150px;
+      border-radius: 8px;
+      overflow: hidden;
+      background-color: #f8fafc;
+    }
+    
+    .ai-carousel-img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+    
+    .ai-carousel-name {
+      padding: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      height: 45px;
+    }
+    
+    .ai-carousel-price {
+      padding: 0 8px 8px 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #0a2647;
+    }
+    
+    .ai-carousel-nav {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .ai-carousel-btn {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #e2e8f0;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+    }
+    
+    .ai-carousel-btn.active {
+      background-color: #0e86d4;
+      width: 20px;
+      border-radius: 10px;
+    }
+    
+    /* Discover Tab Styles */
+    .ai-discover-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 15px;
+    }
+    
+    .ai-discover-category {
+      background-color: #f8fafc;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .ai-discover-header {
+      background-color: #0e86d4;
+      color: white;
+      padding: 10px 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .ai-discover-products {
+      display: flex;
+      gap: 10px;
+      padding: 15px;
+    }
+    
+    .ai-discover-product {
+      flex: 1;
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .ai-discover-img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+    }
+    
+    .ai-discover-name {
+      padding: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      height: 45px;
+    }
+    
+    .ai-discover-price {
+      padding: 0 8px 8px 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #0a2647;
+    }
+    
+    /* AI Preferences Dialog */
+    .ai-preferences-dialog {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    
+    .ai-dialog-content {
+      background-color: white;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+    }
+    
+    .ai-dialog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .ai-dialog-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    
+    .ai-preferences-list {
+      list-style: none;
+      margin-bottom: 20px;
+    }
+    
+    .ai-preference-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .ai-preference-label {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .ai-preference-title {
+      font-weight: 500;
+      margin-bottom: 3px;
+    }
+    
+    .ai-preference-desc {
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+    
+    .ai-preference-select {
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: 1px solid #e2e8f0;
+      font-size: 0.9rem;
+      background-color: white;
+      cursor: pointer;
+    }
+    
+    .ai-categories-btn {
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      background-color: white;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .ai-categories-btn:hover {
+      background-color: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+    
+    .ai-toggle {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    
+    .ai-toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .ai-toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #e2e8f0;
+      transition: .4s;
+      border-radius: 34px;
+    }
+    
+    .ai-toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    .ai-toggle input:checked + .ai-toggle-slider {
+      background-color: #0e86d4;
+    }
+    
+    .ai-toggle input:checked + .ai-toggle-slider:before {
+      transform: translateX(26px);
+    }
+    
+    .ai-data-management {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      justify-content: center;
+    }
+    
+    .ai-data-btn {
+      padding: 8px 15px;
+      border-radius: 4px;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      background-color: white;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .ai-data-btn:hover {
+      background-color: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+    
+    /* Category Selection Styles */
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      width: 100%;
+      margin-top: 10px;
+    }
+    
+    .category-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+    
+    .category-checkbox:hover {
+      background-color: #f1f5f9;
+    }
+    
+    .category-checkbox input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    /* AI Preferences Dialog */
+    .ai-preferences-dialog {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    
+    .ai-dialog-content {
+      background-color: white;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    
+    .ai-dialog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .ai-dialog-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #0e86d4;
+    }
+    
+    .ai-preferences-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .ai-preference-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .ai-preference-label {
+      flex: 1;
+    }
+    
+    .ai-preference-title {
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    
+    .ai-preference-desc {
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+    
+    .ai-preference-select, .ai-categories-btn {
+      min-width: 150px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+      background-color: white;
+      cursor: pointer;
+    }
+    
+    .ai-categories-btn {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+    
+    .ai-toggle {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 24px;
+    }
+    
+    .ai-toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .ai-toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #e2e8f0;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    
+    .ai-toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    .ai-toggle input:checked + .ai-toggle-slider {
+      background-color: #0e86d4;
+    }
+    
+    .ai-toggle input:checked + .ai-toggle-slider:before {
+      transform: translateX(24px);
+    }
+    
+    /* Customize Widget Dialog */
+    .customize-dialog {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+
+    .dialog-content {
+      background-color: white;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+    }
+
+    .dialog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .dialog-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .dialog-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .widgets-list {
+      list-style: none;
+      margin-bottom: 20px;
+    }
+
+    .widget-item {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      cursor: move;
+    }
+
+    .widget-item:hover {
+      background-color: #f1f5f9;
+    }
+
+    .widget-item-icon {
+      margin-right: 15px;
+      color: #64748b;
+      font-size: 1.2rem;
+    }
+
+    .widget-item-name {
+      flex: 1;
+    }
+
+    .widget-item-checkbox {
+      width: 20px;
+      height: 20px;
+    }
+
+    .dialog-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .dialog-btn {
+      padding: 8px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      border: none;
+    }
+
+    .dialog-btn.cancel {
+      background-color: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .dialog-btn.save {
+      background-color: #0e86d4;
+      color: white;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .dashboard-container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+      }
+
+      .widgets-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .stats-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .favorites-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <a href="home-new-en.html" class="logo">
+        <i class="fas fa-shopping-bag"></i>
+        EchoShop
+      </a>
+      <div class="user-nav">
+        <div class="user-info">
+          <div class="user-avatar">A</div>
+          <div class="user-name">Ahmed Mohamed</div>
+        </div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="user-profile">
+        <div class="user-profile-pic">A</div>
+        <div class="user-profile-name">Ahmed Mohamed</div>
+        <div class="user-profile-email">ahmed@example.com</div>
+        <div class="user-status">Premium Member</div>
+      </div>
+
+      <ul class="nav-menu">
+        <li>
+          <a href="personal-dashboard-en.html" class="active">
+            <i class="fas fa-home"></i>
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="personal-dashboard.html">
+            <i class="fas fa-globe"></i>
+            العربية
+          </a>
+        </li>
+        <li>
+          <a href="orders.html">
+            <i class="fas fa-shopping-cart"></i>
+            My Orders
+          </a>
+        </li>
+        <li>
+          <a href="products.html">
+            <i class="fas fa-box"></i>
+            Products
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fas fa-heart"></i>
+            Wishlist
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fas fa-wallet"></i>
+            Wallet
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fas fa-address-book"></i>
+            Addresses
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fas fa-cog"></i>
+            Settings
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fas fa-headset"></i>
+            Support
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="page-title">
+        <h1>Personal Dashboard</h1>
+        <button class="add-widget-btn" onclick="openCustomizeDialog()">
+          <i class="fas fa-plus"></i>
+          Customize Widgets
+        </button>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-cards">
+        <div class="stat-card">
+          <div class="stat-icon sales">
+            <i class="fas fa-money-bill-wave"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value">$1,258.00</div>
+            <div class="stat-label">Total Sales</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon orders">
+            <i class="fas fa-shopping-bag"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value">25</div>
+            <div class="stat-label">Total Orders</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon products">
+            <i class="fas fa-box"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value">150</div>
+            <div class="stat-label">Watched Products</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon visitors">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value">1,250</div>
+            <div class="stat-label">Reward Points</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Widgets Grid -->
+      <div class="widgets-grid">
+        <!-- Recent Orders Widget -->
+        <div class="widget">
+          <div class="widget-header">
+            <div class="widget-title">
+              <i class="fas fa-shopping-cart"></i>
+              Recent Orders
+            </div>
+            <div class="widget-actions">
+              <button class="widget-action-btn" title="Refresh">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+              <button class="widget-action-btn" title="Settings">
+                <i class="fas fa-ellipsis-v"></i>
+              </button>
+            </div>
+          </div>
+          <div class="widget-content">
+            <ul class="recent-orders-list">
+              <li class="order-item">
+                <div class="order-icon">
+                  <i class="fas fa-box"></i>
+                </div>
+                <div class="order-details">
+                  <div class="order-id">#OR123456</div>
+                  <div class="order-date">April 27, 2025</div>
+                </div>
+                <div class="order-status completed">Completed</div>
+                <div class="order-amount">$250.00</div>
+              </li>
+              <li class="order-item">
+                <div class="order-icon">
+                  <i class="fas fa-box"></i>
+                </div>
+                <div class="order-details">
+                  <div class="order-id">#OR123455</div>
+                  <div class="order-date">April 25, 2025</div>
+                </div>
+                <div class="order-status processing">Processing</div>
+                <div class="order-amount">$180.00</div>
+              </li>
+              <li class="order-item">
+                <div class="order-icon">
+                  <i class="fas fa-box"></i>
+                </div>
+                <div class="order-details">
+                  <div class="order-id">#OR123454</div>
+                  <div class="order-date">April 20, 2025</div>
+                </div>
+                <div class="order-status pending">Pending</div>
+                <div class="order-amount">$320.00</div>
+              </li>
+              <li class="order-item">
+                <div class="order-icon">
+                  <i class="fas fa-box"></i>
+                </div>
+                <div class="order-details">
+                  <div class="order-id">#OR123453</div>
+                  <div class="order-date">April 18, 2025</div>
+                </div>
+                <div class="order-status completed">Completed</div>
+                <div class="order-amount">$95.00</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <!-- One-Click Support Ticket Widget -->
+        <div class="widget">
+          <div class="widget-header">
+            <div class="widget-title">
+              <i class="fas fa-headset"></i>
+              Quick Support
+            </div>
+            <div class="widget-actions">
+              <button class="widget-action-btn" title="Refresh">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+              <button class="widget-action-btn" title="Settings">
+                <i class="fas fa-ellipsis-v"></i>
+              </button>
+            </div>
+          </div>
+          <div class="widget-content">
+            <div class="support-options">
+              <p class="support-intro">Create a support ticket with just one click</p>
+              
+              <div class="quick-support-buttons">
+                <button class="quick-support-btn" onclick="createSupportTicket('order')">
+                  <i class="fas fa-box"></i>
+                  <span>Order Issue</span>
+                </button>
+                <button class="quick-support-btn" onclick="createSupportTicket('delivery')">
+                  <i class="fas fa-truck"></i>
+                  <span>Delivery Issue</span>
+                </button>
+                <button class="quick-support-btn" onclick="createSupportTicket('payment')">
+                  <i class="fas fa-credit-card"></i>
+                  <span>Payment Issue</span>
+                </button>
+                <button class="quick-support-btn" onclick="createSupportTicket('product')">
+                  <i class="fas fa-tag"></i>
+                  <span>Product Issue</span>
+                </button>
+                <button class="quick-support-btn" onclick="createSupportTicket('return')">
+                  <i class="fas fa-undo"></i>
+                  <span>Return Request</span>
+                </button>
+                <button class="quick-support-btn" onclick="createSupportTicket('other')">
+                  <i class="fas fa-question-circle"></i>
+                  <span>Other Help</span>
+                </button>
+              </div>
+              
+              <div class="active-tickets">
+                <div class="ticket-header">
+                  <h4>Active Support Tickets</h4>
+                  <span class="ticket-count">1</span>
+                </div>
+                <div class="ticket-item">
+                  <div class="ticket-icon">
+                    <i class="fas fa-truck"></i>
+                  </div>
+                  <div class="ticket-details">
+                    <div class="ticket-title">Delivery Issue #TK123478</div>
+                    <div class="ticket-date">April 27, 2025</div>
+                  </div>
+                  <div class="ticket-status pending">Under Review</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Access Favorites -->
+        <div class="widget">
+          <div class="widget-header">
+            <div class="widget-title">
+              <i class="fas fa-star"></i>
+              Quick Access
+            </div>
+            <div class="widget-actions">
+              <button class="widget-action-btn" title="Refresh">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+              <button class="widget-action-btn" title="Settings">
+                <i class="fas fa-ellipsis-v"></i>
+              </button>
+            </div>
+          </div>
+          <div class="widget-content">
+            <div class="favorites-grid">
+              <a href="orders.html" class="favorite-item">
+                <div class="favorite-icon">
+                  <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="favorite-name">My Orders</div>
+              </a>
+              <a href="#" class="favorite-item">
+                <div class="favorite-icon">
+                  <i class="fas fa-heart"></i>
+                </div>
+                <div class="favorite-name">Wishlist</div>
+              </a>
+              <a href="#" class="favorite-item">
+                <div class="favorite-icon">
+                  <i class="fas fa-wallet"></i>
+                </div>
+                <div class="favorite-name">Wallet</div>
+              </a>
+              <a href="#" class="favorite-item">
+                <div class="favorite-icon">
+                  <i class="fas fa-truck"></i>
+                </div>
+                <div class="favorite-name">Shipping</div>
+              </a>
+              <a href="#" class="favorite-item">
+                <div class="favorite-icon">
+                  <i class="fas fa-address-book"></i>
+                </div>
+                <div class="favorite-name">Addresses</div>
+              </a>
+              <a href="#" class="favorite-item">
+                <div class="favorite-icon">
+                  <i class="fas fa-gift"></i>
+                </div>
+                <div class="favorite-name">Gifts</div>
+              </a>
+              <a href="#" class="favorite-item">
+                <div class="favorite-icon">
+                  <i class="fas fa-tag"></i>
+                </div>
+                <div class="favorite-name">Discounts</div>
+              </a>
+              <a href="#" class="favorite-item">
+                <div class="favorite-icon">
+                  <i class="fas fa-headset"></i>
+                </div>
+                <div class="favorite-name">Support</div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alerts & Notifications -->
+        <div class="widget">
+          <div class="widget-header">
+            <div class="widget-title">
+              <i class="fas fa-bell"></i>
+              Alerts & Notifications
+            </div>
+            <div class="widget-actions">
+              <button class="widget-action-btn" title="Refresh">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+              <button class="widget-action-btn" title="Settings">
+                <i class="fas fa-ellipsis-v"></i>
+              </button>
+            </div>
+          </div>
+          <div class="widget-content">
+            <ul class="alerts-list">
+              <li class="alert-item">
+                <div class="alert-icon info">
+                  <i class="fas fa-info"></i>
+                </div>
+                <div class="alert-details">
+                  <div class="alert-title">Your Order #OR123455 Has Shipped</div>
+                  <div class="alert-desc">Your order has been shipped and will arrive in 2-3 business days</div>
+                </div>
+                <div class="alert-time">2 hours ago</div>
+              </li>
+              <li class="alert-item">
+                <div class="alert-icon warning">
+                  <i class="fas fa-exclamation"></i>
+                </div>
+                <div class="alert-details">
+                  <div class="alert-title">Flash Sale on Selected Items</div>
+                  <div class="alert-desc">Enjoy 30% off on electronics for a limited time</div>
+                </div>
+                <div class="alert-time">1 day ago</div>
+              </li>
+              <li class="alert-item">
+                <div class="alert-icon info">
+                  <i class="fas fa-info"></i>
+                </div>
+                <div class="alert-details">
+                  <div class="alert-title">Order #OR123454 Confirmed</div>
+                  <div class="alert-desc">Your order has been confirmed and is being prepared for shipping</div>
+                </div>
+                <div class="alert-time">2 days ago</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Progress / Activity Widget -->
+        <div class="widget">
+          <div class="widget-header">
+            <div class="widget-title">
+              <i class="fas fa-chart-line"></i>
+              Progress & Activity
+            </div>
+            <div class="widget-actions">
+              <button class="widget-action-btn" title="Refresh">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+              <button class="widget-action-btn" title="Settings">
+                <i class="fas fa-ellipsis-v"></i>
+              </button>
+            </div>
+          </div>
+          <div class="widget-content">
+            <ul class="progress-items">
+              <li class="progress-item">
+                <div class="progress-header">
+                  <div class="progress-title">Profile Completion</div>
+                  <div class="progress-percentage">80%</div>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill blue" style="width: 80%;"></div>
+                </div>
+              </li>
+              <li class="progress-item">
+                <div class="progress-header">
+                  <div class="progress-title">Membership Level</div>
+                  <div class="progress-percentage">60%</div>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill orange" style="width: 60%;"></div>
+                </div>
+              </li>
+              <li class="progress-item">
+                <div class="progress-header">
+                  <div class="progress-title">Reward Points</div>
+                  <div class="progress-percentage">1,250 / 2,000</div>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill green" style="width: 62.5%;"></div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <!-- Dynamic Price Comparison Widget -->
+        <div class="widget">
+          <div class="widget-header">
+            <div class="widget-title">
+              <i class="fas fa-balance-scale"></i>
+              Dynamic Price Comparison
+            </div>
+            <div class="widget-actions">
+              <button class="widget-action-btn" title="Refresh" onclick="refreshPriceComparison()">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+              <button class="widget-action-btn" title="Settings">
+                <i class="fas fa-ellipsis-v"></i>
+              </button>
+            </div>
+          </div>
+          <div class="widget-content">
+            <div class="price-comparison-container">
+              <div class="comparison-search">
+                <input type="text" class="comparison-input" placeholder="Search for a product to compare..." id="comparisonSearchInput">
+                <button class="comparison-search-btn" onclick="searchProductComparison()">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+              
+              <div class="watched-products">
+                <h4 class="watched-title">Products You're Watching</h4>
+                
+                <div class="price-comparison-grid">
+                  <div class="comparison-item">
+                    <div class="comparison-product">
+                      <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12" alt="Wireless Headphones" class="comparison-img">
+                      <div class="comparison-info">
+                        <div class="comparison-name">Wireless Headphones with Noise Cancellation</div>
+                        <div class="comparison-price our-price">$99.99</div>
+                      </div>
+                    </div>
+                    <div class="price-comparison-bars">
+                      <div class="comparison-bar-item">
+                        <div class="competitor-info">
+                          <span class="competitor-name">Competitor A</span>
+                          <span class="competitor-price">$109.99</span>
+                        </div>
+                        <div class="comparison-bar">
+                          <div class="comparison-fill saving" style="width: 90%;"></div>
+                        </div>
+                        <div class="savings-tag">Save $10.00</div>
+                      </div>
+                      <div class="comparison-bar-item">
+                        <div class="competitor-info">
+                          <span class="competitor-name">Competitor B</span>
+                          <span class="competitor-price">$115.00</span>
+                        </div>
+                        <div class="comparison-bar">
+                          <div class="comparison-fill saving" style="width: 87%;"></div>
+                        </div>
+                        <div class="savings-tag">Save $15.01</div>
+                      </div>
+                      <div class="comparison-bar-item">
+                        <div class="competitor-info">
+                          <span class="competitor-name">Competitor C</span>
+                          <span class="competitor-price">$95.00</span>
+                        </div>
+                        <div class="comparison-bar">
+                          <div class="comparison-fill higher" style="width: 105%;"></div>
+                        </div>
+                        <div class="savings-tag loss">Pay $4.99 more</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="comparison-item">
+                    <div class="comparison-product">
+                      <img src="https://images.unsplash.com/photo-1585944796548-e57c77c536d3" alt="Smartphone" class="comparison-img">
+                      <div class="comparison-info">
+                        <div class="comparison-name">Smartphone with 6.5" Screen</div>
+                        <div class="comparison-price our-price">$899.99</div>
+                      </div>
+                    </div>
+                    <div class="price-comparison-bars">
+                      <div class="comparison-bar-item">
+                        <div class="competitor-info">
+                          <span class="competitor-name">Competitor A</span>
+                          <span class="competitor-price">$929.99</span>
+                        </div>
+                        <div class="comparison-bar">
+                          <div class="comparison-fill saving" style="width: 97%;"></div>
+                        </div>
+                        <div class="savings-tag">Save $30.00</div>
+                      </div>
+                      <div class="comparison-bar-item">
+                        <div class="competitor-info">
+                          <span class="competitor-name">Competitor B</span>
+                          <span class="competitor-price">$879.99</span>
+                        </div>
+                        <div class="comparison-bar">
+                          <div class="comparison-fill higher" style="width: 102%;"></div>
+                        </div>
+                        <div class="savings-tag loss">Pay $20.00 more</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <button class="view-all-btn">
+                  <i class="fas fa-list"></i>
+                  View All Comparisons
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- AI-Powered Personalized Recommendations Widget -->
+        <div class="widget">
+          <div class="widget-header">
+            <div class="widget-title">
+              <i class="fas fa-robot"></i>
+              AI-Powered Personalized Recommendations
+            </div>
+            <div class="widget-actions">
+              <button class="widget-action-btn" title="Refresh" onclick="refreshRecommendations()">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+              <button class="widget-action-btn" title="Settings" onclick="openAIPreferences()">
+                <i class="fas fa-sliders-h"></i>
+              </button>
+            </div>
+          </div>
+          <div class="widget-content">
+            <div class="ai-recommendation-container">
+              <div class="recommendation-header">
+                <div class="ai-avatar">
+                  <i class="fas fa-robot"></i>
+                </div>
+                <div class="ai-intro">
+                  <div class="ai-title">EchoShop Smart Recommendations</div>
+                  <div class="ai-subtitle">Based on your previous activity and product preferences</div>
+                </div>
+              </div>
+              
+              <div class="ai-tabs">
+                <button class="ai-tab active" onclick="switchRecommendationTab(this, 'for-you')">
+                  <i class="fas fa-thumbs-up"></i>
+                  <span>For You</span>
+                </button>
+                <button class="ai-tab" onclick="switchRecommendationTab(this, 'trending')">
+                  <i class="fas fa-chart-line"></i>
+                  <span>Trending</span>
+                </button>
+                <button class="ai-tab" onclick="switchRecommendationTab(this, 'similar')">
+                  <i class="fas fa-th"></i>
+                  <span>Similar</span>
+                </button>
+                <button class="ai-tab" onclick="switchRecommendationTab(this, 'discover')">
+                  <i class="fas fa-compass"></i>
+                  <span>Discover</span>
+                </button>
+              </div>
+              
+              <div class="ai-tab-content active" id="for-you-content">
+                <div class="ai-recommendation-reason">
+                  <i class="fas fa-lightbulb"></i>
+                  <span>Based on your recent electronics purchases</span>
+                </div>
+                
+                <div class="ai-products-grid">
+                  <div class="ai-product-card">
+                    <div class="ai-product-img-container">
+                      <img src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed" alt="Premium Wireless Headphones" class="ai-product-img">
+                      <div class="ai-product-match">95% Match</div>
+                    </div>
+                    <div class="ai-product-info">
+                      <div class="ai-product-name">Premium Wireless Headphones with Advanced Noise Cancellation</div>
+                      <div class="ai-product-price">$79.99</div>
+                      <div class="ai-product-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                        <span>(128)</span>
+                      </div>
+                    </div>
+                    <div class="ai-product-actions">
+                      <button class="ai-view-btn">View Product</button>
+                      <button class="ai-cart-btn"><i class="fas fa-cart-plus"></i></button>
+                    </div>
+                  </div>
+                  
+                  <div class="ai-product-card">
+                    <div class="ai-product-img-container">
+                      <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12" alt="Wireless Charger" class="ai-product-img">
+                      <div class="ai-product-match">92% Match</div>
+                    </div>
+                    <div class="ai-product-info">
+                      <div class="ai-product-name">Fast Wireless Charger Compatible with All Devices</div>
+                      <div class="ai-product-price">$29.99</div>
+                      <div class="ai-product-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="far fa-star"></i>
+                        <span>(87)</span>
+                      </div>
+                    </div>
+                    <div class="ai-product-actions">
+                      <button class="ai-view-btn">View Product</button>
+                      <button class="ai-cart-btn"><i class="fas fa-cart-plus"></i></button>
+                    </div>
+                  </div>
+                  
+                  <div class="ai-product-card">
+                    <div class="ai-product-img-container">
+                      <img src="https://images.unsplash.com/photo-1544866092-1935c5ef2a8f" alt="Laptop Bag" class="ai-product-img">
+                      <div class="ai-product-match">88% Match</div>
+                    </div>
+                    <div class="ai-product-info">
+                      <div class="ai-product-name">Water-Resistant Laptop Bag with USB Port</div>
+                      <div class="ai-product-price">$42.99</div>
+                      <div class="ai-product-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <span>(215)</span>
+                      </div>
+                    </div>
+                    <div class="ai-product-actions">
+                      <button class="ai-view-btn">View Product</button>
+                      <button class="ai-cart-btn"><i class="fas fa-cart-plus"></i></button>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="ai-preferences">
+                  <div class="ai-question">Are these recommendations helpful to you?</div>
+                  <div class="ai-feedback">
+                    <button class="ai-feedback-btn" onclick="sendAIFeedback('like')">
+                      <i class="fas fa-thumbs-up"></i>
+                      <span>Yes</span>
+                    </button>
+                    <button class="ai-feedback-btn" onclick="sendAIFeedback('dislike')">
+                      <i class="fas fa-thumbs-down"></i>
+                      <span>No</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="ai-tab-content" id="trending-content">
+                <div class="ai-recommendation-reason">
+                  <i class="fas fa-fire"></i>
+                  <span>Most popular products this week</span>
+                </div>
+                
+                <div class="ai-trending-list">
+                  <div class="ai-trending-item">
+                    <div class="ai-trending-rank">1</div>
+                    <img src="https://images.unsplash.com/photo-1585155770447-2f66e2a397b5" alt="Smart Watch" class="ai-trending-img">
+                    <div class="ai-trending-info">
+                      <div class="ai-trending-name">Multi-functional Waterproof Smart Watch</div>
+                      <div class="ai-trending-price">$89.99</div>
+                      <div class="ai-trending-meta">
+                        <span class="ai-trending-sales"><i class="fas fa-shopping-cart"></i> 1,289+ sold</span>
+                        <span class="ai-trending-views"><i class="fas fa-eye"></i> 15K+ views</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="ai-trending-item">
+                    <div class="ai-trending-rank">2</div>
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e" alt="Headphones" class="ai-trending-img">
+                    <div class="ai-trending-info">
+                      <div class="ai-trending-name">Wireless Headphones with Noise Isolation</div>
+                      <div class="ai-trending-price">$54.99</div>
+                      <div class="ai-trending-meta">
+                        <span class="ai-trending-sales"><i class="fas fa-shopping-cart"></i> 956+ sold</span>
+                        <span class="ai-trending-views"><i class="fas fa-eye"></i> 12K+ views</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="ai-trending-item">
+                    <div class="ai-trending-rank">3</div>
+                    <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12" alt="Wireless Charger" class="ai-trending-img">
+                    <div class="ai-trending-info">
+                      <div class="ai-trending-name">Fast Wireless Charger Compatible with All Devices</div>
+                      <div class="ai-trending-price">$29.99</div>
+                      <div class="ai-trending-meta">
+                        <span class="ai-trending-sales"><i class="fas fa-shopping-cart"></i> 723+ sold</span>
+                        <span class="ai-trending-views"><i class="fas fa-eye"></i> 9K+ views</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <button class="view-all-btn">
+                  <i class="fas fa-fire"></i>
+                  View All Trending Products
+                </button>
+              </div>
+              
+              <div class="ai-tab-content" id="similar-content">
+                <div class="ai-recommendation-reason">
+                  <i class="fas fa-search"></i>
+                  <span>Similar to the wireless headphones you recently viewed</span>
+                </div>
+                
+                <div class="ai-carousel">
+                  <div class="ai-carousel-item">
+                    <img src="https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb" alt="Gaming Headset" class="ai-carousel-img">
+                    <div class="ai-carousel-name">Professional Gaming Headset</div>
+                    <div class="ai-carousel-price">$79.99</div>
+                  </div>
+                  <div class="ai-carousel-item">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e" alt="Headphones" class="ai-carousel-img">
+                    <div class="ai-carousel-name">Wireless Headphones with Noise Isolation</div>
+                    <div class="ai-carousel-price">$54.99</div>
+                  </div>
+                  <div class="ai-carousel-item">
+                    <img src="https://images.unsplash.com/photo-1484704849700-f032a6c91a81" alt="Earphones" class="ai-carousel-img">
+                    <div class="ai-carousel-name">Wired Earphones with Microphone</div>
+                    <div class="ai-carousel-price">$19.99</div>
+                  </div>
+                  <div class="ai-carousel-item">
+                    <img src="https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b" alt="Bluetooth Earbuds" class="ai-carousel-img">
+                    <div class="ai-carousel-name">Mini Bluetooth Earbuds</div>
+                    <div class="ai-carousel-price">$34.99</div>
+                  </div>
+                </div>
+                
+                <div class="ai-carousel-nav">
+                  <button class="ai-carousel-btn active"></button>
+                  <button class="ai-carousel-btn"></button>
+                  <button class="ai-carousel-btn"></button>
+                </div>
+              </div>
+              
+              <div class="ai-tab-content" id="discover-content">
+                <div class="ai-recommendation-reason">
+                  <i class="fas fa-lightbulb"></i>
+                  <span>Discover featured products that might match your interests</span>
+                </div>
+                
+                <div class="ai-discover-grid">
+                  <div class="ai-discover-category">
+                    <div class="ai-discover-header">
+                      <i class="fas fa-mobile-alt"></i>
+                      <span>Smart Devices</span>
+                    </div>
+                    <div class="ai-discover-products">
+                      <div class="ai-discover-product">
+                        <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12" alt="Smart Watch" class="ai-discover-img">
+                        <div class="ai-discover-name">Multi-functional Smart Watch</div>
+                        <div class="ai-discover-price">$89.99</div>
+                      </div>
+                      <div class="ai-discover-product">
+                        <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12" alt="Fitness Band" class="ai-discover-img">
+                        <div class="ai-discover-name">Smart Fitness Tracking Band</div>
+                        <div class="ai-discover-price">$29.99</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="ai-discover-category">
+                    <div class="ai-discover-header">
+                      <i class="fas fa-plug"></i>
+                      <span>Accessories</span>
+                    </div>
+                    <div class="ai-discover-products">
+                      <div class="ai-discover-product">
+                        <img src="https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb" alt="Power Bank" class="ai-discover-img">
+                        <div class="ai-discover-name">20000mAh Portable Power Bank</div>
+                        <div class="ai-discover-price">$45.99</div>
+                      </div>
+                      <div class="ai-discover-product">
+                        <img src="https://images.unsplash.com/photo-1575695342320-d2ae998d67dc" alt="Phone Holder" class="ai-discover-img">
+                        <div class="ai-discover-name">Magnetic Car Phone Holder</div>
+                        <div class="ai-discover-price">$12.99</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <button class="view-all-btn">
+                  <i class="fas fa-compass"></i>
+                  Discover More
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Customize Widgets Dialog -->
+  <div class="customize-dialog" id="customizeDialog">
+    <div class="dialog-content">
+      <div class="dialog-header">
+        <div class="dialog-title">Customize Widgets</div>
+        <button class="dialog-close" onclick="closeCustomizeDialog()">&times;</button>
+      </div>
+      <div class="dialog-body">
+        <p>Select widgets to display on your dashboard:</p>
+        <ul class="widgets-list">
+          <li class="widget-item">
+            <i class="fas fa-grip-vertical widget-item-icon"></i>
+            <span class="widget-item-name">Recent Orders</span>
+            <input type="checkbox" class="widget-item-checkbox" checked>
+          </li>
+          <li class="widget-item">
+            <i class="fas fa-grip-vertical widget-item-icon"></i>
+            <span class="widget-item-name">Quick Access</span>
+            <input type="checkbox" class="widget-item-checkbox" checked>
+          </li>
+          <li class="widget-item">
+            <i class="fas fa-grip-vertical widget-item-icon"></i>
+            <span class="widget-item-name">Alerts & Notifications</span>
+            <input type="checkbox" class="widget-item-checkbox" checked>
+          </li>
+          <li class="widget-item">
+            <i class="fas fa-grip-vertical widget-item-icon"></i>
+            <span class="widget-item-name">Progress & Activity</span>
+            <input type="checkbox" class="widget-item-checkbox" checked>
+          </li>
+          <li class="widget-item">
+            <i class="fas fa-grip-vertical widget-item-icon"></i>
+            <span class="widget-item-name">Recently Viewed Products</span>
+            <input type="checkbox" class="widget-item-checkbox">
+          </li>
+          <li class="widget-item">
+            <i class="fas fa-grip-vertical widget-item-icon"></i>
+            <span class="widget-item-name">Favorite Products</span>
+            <input type="checkbox" class="widget-item-checkbox">
+          </li>
+          <li class="widget-item">
+            <i class="fas fa-grip-vertical widget-item-icon"></i>
+            <span class="widget-item-name">Wallet Status</span>
+            <input type="checkbox" class="widget-item-checkbox">
+          </li>
+        </ul>
+      </div>
+      <div class="dialog-actions">
+        <button class="dialog-btn cancel" onclick="closeCustomizeDialog()">Cancel</button>
+        <button class="dialog-btn save" onclick="saveWidgetSettings()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Preferences Dialog -->
+  <div class="ai-preferences-dialog" id="aiPreferencesDialog">
+    <div class="ai-dialog-content">
+      <div class="ai-dialog-header">
+        <div class="ai-dialog-title">AI Recommendation Settings</div>
+        <button class="dialog-close" onclick="closeAIPreferences()">&times;</button>
+      </div>
+      <div class="dialog-body">
+        <p>Customize your AI preferences to get more accurate recommendations:</p>
+        
+        <ul class="ai-preferences-list">
+          <li class="ai-preference-item">
+            <div class="ai-preference-label">
+              <div class="ai-preference-title">Data Sources</div>
+              <div class="ai-preference-desc">Choose what data sources AI should use for your recommendations</div>
+            </div>
+            <select class="ai-preference-select" id="aiDataSources">
+              <option value="all">All Sources</option>
+              <option value="purchases">Purchases Only</option>
+              <option value="views">Views Only</option>
+              <option value="manual">Manual Selection</option>
+            </select>
+          </li>
+          
+          <li class="ai-preference-item">
+            <div class="ai-preference-label">
+              <div class="ai-preference-title">Privacy Level</div>
+              <div class="ai-preference-desc">Control how your data is used to improve recommendations</div>
+            </div>
+            <select class="ai-preference-select" id="aiPrivacyLevel">
+              <option value="high">High Privacy</option>
+              <option value="balanced" selected>Balanced</option>
+              <option value="personalized">More Personalized</option>
+            </select>
+          </li>
+          
+          <li class="ai-preference-item">
+            <div class="ai-preference-label">
+              <div class="ai-preference-title">Shopping Interests</div>
+              <div class="ai-preference-desc">Select categories you're most interested in</div>
+            </div>
+            <button class="ai-categories-btn" onclick="toggleCategoriesList()">
+              Manage Categories <i class="fas fa-chevron-right"></i>
+            </button>
+          </li>
+          
+          <li class="ai-preference-item categories-list" id="categoriesList" style="display: none; flex-direction: column; align-items: flex-start;">
+            <div class="categories-grid">
+              <label class="category-checkbox">
+                <input type="checkbox" name="categories" value="electronics" checked> Electronics
+              </label>
+              <label class="category-checkbox">
+                <input type="checkbox" name="categories" value="fashion"> Fashion
+              </label>
+              <label class="category-checkbox">
+                <input type="checkbox" name="categories" value="home"> Home & Kitchen
+              </label>
+              <label class="category-checkbox">
+                <input type="checkbox" name="categories" value="beauty"> Beauty
+              </label>
+              <label class="category-checkbox">
+                <input type="checkbox" name="categories" value="sports"> Sports
+              </label>
+              <label class="category-checkbox">
+                <input type="checkbox" name="categories" value="books"> Books
+              </label>
+              <label class="category-checkbox">
+                <input type="checkbox" name="categories" value="toys"> Toys
+              </label>
+              <label class="category-checkbox">
+                <input type="checkbox" name="categories" value="automotive"> Automotive
+              </label>
+            </div>
+          </li>
+          
+          <li class="ai-preference-item">
+            <div class="ai-preference-label">
+              <div class="ai-preference-title">Similar Product Recommendations</div>
+              <div class="ai-preference-desc">Show products similar to what you're viewing</div>
+            </div>
+            <label class="ai-toggle">
+              <input type="checkbox" id="aiSimilarProducts" checked>
+              <span class="ai-toggle-slider"></span>
+            </label>
+          </li>
+          
+          <li class="ai-preference-item">
+            <div class="ai-preference-label">
+              <div class="ai-preference-title">Recommendation Refresh Rate</div>
+              <div class="ai-preference-desc">How often should recommendations be updated?</div>
+            </div>
+            <select class="ai-preference-select" id="aiRefreshRate">
+              <option value="realtime">Real-time</option>
+              <option value="daily" selected>Daily</option>
+              <option value="weekly">Weekly</option>
+            </select>
+          </li>
+        </ul>
+        
+        <div class="ai-data-management">
+          <button class="ai-data-btn" onclick="clearRecommendationHistory()">
+            <i class="fas fa-history"></i>
+            Clear Recommendation History
+          </button>
+          <button class="ai-data-btn" onclick="downloadUserData()">
+            <i class="fas fa-download"></i>
+            Download My Data
+          </button>
+        </div>
+      </div>
+      <div class="dialog-actions">
+        <button class="dialog-btn cancel" onclick="closeAIPreferences()">Cancel</button>
+        <button class="dialog-btn save" onclick="saveAIPreferences()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Logout Function
+    function logout() {
+      if (confirm("Are you sure you want to logout?")) {
+        window.location.href = "index.html";
+      }
+    }
+
+    // Customize Dialog Functions
+    function openCustomizeDialog() {
+      document.getElementById('customizeDialog').style.display = 'flex';
+    }
+
+    function closeCustomizeDialog() {
+      document.getElementById('customizeDialog').style.display = 'none';
+    }
+
+    function saveWidgetSettings() {
+      // Here would be the code to save widget preferences
+      alert("Widget settings saved successfully!");
+      closeCustomizeDialog();
+    }
+
+    // Close dialog when clicking outside
+    window.onclick = function(event) {
+      const dialog = document.getElementById('customizeDialog');
+      if (event.target === dialog) {
+        closeCustomizeDialog();
+      }
+    }
+    
+    // Support Ticket Functions
+    function createSupportTicket(type) {
+      // Define ticket title based on type
+      let ticketTitle = "Help Request";
+      let ticketIcon = "question-circle";
+      
+      switch(type) {
+        case 'order':
+          ticketTitle = "Order Issue";
+          ticketIcon = "box";
+          break;
+        case 'delivery':
+          ticketTitle = "Delivery Issue";
+          ticketIcon = "truck";
+          break;
+        case 'payment':
+          ticketTitle = "Payment Issue";
+          ticketIcon = "credit-card";
+          break;
+        case 'product':
+          ticketTitle = "Product Issue";
+          ticketIcon = "tag";
+          break;
+        case 'return':
+          ticketTitle = "Return Request";
+          ticketIcon = "undo";
+          break;
+      }
+      
+      // Generate random ticket number
+      const ticketNumber = "TK" + Math.floor(Math.random() * 1000000);
+      
+      // In a real app, this would send ticket data to a server
+      // For this example, just show a confirmation message
+      alert(`Support ticket created successfully
+Issue Type: ${ticketTitle}
+Ticket Number: ${ticketNumber}
+We'll get back to you soon.`);
+    }
+    
+    // Price Comparison Functions
+    function searchProductComparison() {
+      const searchInput = document.getElementById('comparisonSearchInput').value;
+      if (searchInput.trim() === '') {
+        alert('Please enter a product name to search');
+        return;
+      }
+      
+      // In a real app, this would search the database
+      alert(`Searching for: ${searchInput}`);
+    }
+    
+    function refreshPriceComparison() {
+      // In a real app, this would update comparison data from the server
+      alert('Price comparison data has been updated');
+    }
+    
+    // AI Recommendations Functions
+    function switchRecommendationTab(tabElement, tabId) {
+      // Remove active class from all tabs and contents
+      document.querySelectorAll('.ai-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.ai-tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      // Add active class to selected tab and content
+      tabElement.classList.add('active');
+      document.getElementById(tabId + '-content').classList.add('active');
+      
+      // Save the current tab preference
+      saveToLocalStorage('aiActiveTab', tabId);
+    }
+    
+    function refreshRecommendations() {
+      // In a real app, this would fetch new recommendations from the server
+      // and update the UI with new product data
+      alert('Fetching new AI-powered recommendations...');
+      
+      // Simulate API call delay
+      setTimeout(() => {
+        alert('Recommendations updated successfully!');
+      }, 1000);
+    }
+    
+    function sendAIFeedback(type) {
+      let message = '';
+      
+      if (type === 'like') {
+        message = 'Thank you for your positive feedback! We will continue to improve our recommendations based on your preferences.';
+      } else {
+        message = 'Thank you for your feedback! We will work on improving the recommendations for you.';
+      }
+      
+      // In a real app, this would send feedback data to the server
+      // and use it to improve future recommendations
+      alert(message);
+      
+      // Save feedback to preferences
+      const preferences = loadFromLocalStorage('aiPreferences') || {};
+      preferences.lastFeedback = {
+        type: type,
+        timestamp: new Date().toISOString()
+      };
+      saveToLocalStorage('aiPreferences', preferences);
+    }
+    
+    function openAIPreferences() {
+      // Load saved preferences and populate the form
+      loadAIPreferences();
+      
+      // Show the preferences dialog
+      document.getElementById('aiPreferencesDialog').style.display = 'flex';
+    }
+    
+    function closeAIPreferences() {
+      document.getElementById('aiPreferencesDialog').style.display = 'none';
+    }
+    
+    function toggleCategoriesList() {
+      const categoriesList = document.getElementById('categoriesList');
+      if (categoriesList.style.display === 'none') {
+        categoriesList.style.display = 'flex';
+      } else {
+        categoriesList.style.display = 'none';
+      }
+    }
+    
+    function loadAIPreferences() {
+      // Load saved preferences from localStorage
+      const preferences = loadFromLocalStorage('aiPreferences') || {};
+      
+      // Set form values based on saved preferences
+      if (preferences.dataSources) {
+        document.getElementById('aiDataSources').value = preferences.dataSources;
+      }
+      
+      if (preferences.privacyLevel) {
+        document.getElementById('aiPrivacyLevel').value = preferences.privacyLevel;
+      }
+      
+      if (preferences.similarProductsEnabled !== undefined) {
+        document.getElementById('aiSimilarProducts').checked = preferences.similarProductsEnabled;
+      }
+      
+      if (preferences.refreshRate) {
+        document.getElementById('aiRefreshRate').value = preferences.refreshRate;
+      }
+      
+      // Set category checkboxes
+      if (preferences.categories && Array.isArray(preferences.categories)) {
+        const checkboxes = document.querySelectorAll('input[name="categories"]');
+        checkboxes.forEach(checkbox => {
+          checkbox.checked = preferences.categories.includes(checkbox.value);
+        });
+      }
+    }
+    
+    function saveAIPreferences() {
+      // Get current form values
+      const dataSources = document.getElementById('aiDataSources').value;
+      const privacyLevel = document.getElementById('aiPrivacyLevel').value;
+      const similarProductsEnabled = document.getElementById('aiSimilarProducts').checked;
+      const refreshRate = document.getElementById('aiRefreshRate').value;
+      
+      // Get selected categories
+      const categoryCheckboxes = document.querySelectorAll('input[name="categories"]:checked');
+      const categories = Array.from(categoryCheckboxes).map(cb => cb.value);
+      
+      // Create preferences object
+      const preferences = {
+        dataSources,
+        privacyLevel,
+        similarProductsEnabled,
+        refreshRate,
+        categories,
+        lastUpdated: new Date().toISOString()
+      };
+      
+      // Save to localStorage and/or backend
+      saveToLocalStorage('aiPreferences', preferences);
+      
+      // In a real app, this would also be sent to the server
+      // to persist the preferences and update the recommendations
+      
+      // Close dialog and show confirmation
+      alert('AI recommendation preferences saved successfully!');
+      closeAIPreferences();
+      
+      // Refresh recommendations based on new preferences
+      setTimeout(() => {
+        refreshRecommendations();
+      }, 500);
+    }
+    
+    function clearRecommendationHistory() {
+      if (confirm('Are you sure you want to clear your recommendation history? This will reset your personalized recommendations.')) {
+        // In a real app, this would send a request to the server to clear history
+        
+        // For now, just reset local history
+        const preferences = loadFromLocalStorage('aiPreferences') || {};
+        preferences.history = [];
+        preferences.lastReset = new Date().toISOString();
+        saveToLocalStorage('aiPreferences', preferences);
+        
+        alert('Recommendation history has been cleared. Your recommendations will be reset.');
+      }
+    }
+    
+    function downloadUserData() {
+      // In a real app, this would trigger a server request to compile user data
+      
+      // For demo purposes, just create a JSON file with local preferences
+      const userData = {
+        preferences: loadFromLocalStorage('aiPreferences') || {},
+        timestamp: new Date().toISOString()
+      };
+      
+      // Create and trigger download
+      const dataStr = JSON.stringify(userData, null, 2);
+      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+      
+      const exportLink = document.createElement('a');
+      exportLink.setAttribute('href', dataUri);
+      exportLink.setAttribute('download', 'echoshop_recommendation_data.json');
+      document.body.appendChild(exportLink);
+      exportLink.click();
+      document.body.removeChild(exportLink);
+    }
+    
+    // Firebase integration (mock for demonstration purposes)
+    function initFirebaseAIRecommendations() {
+      // In a real implementation, this would initialize Firebase and set up listeners
+      console.log('Initializing Firebase AI Recommendations Engine');
+      
+      // Check if user is logged in
+      const isLoggedIn = true; // This would be determined by Firebase Auth state
+      
+      if (isLoggedIn) {
+        // Load preferences from Firebase instead of localStorage
+        // For now, we'll just use localStorage as a stand-in
+        loadFromFirebase();
+      } else {
+        // Use local preferences only
+        loadAIPreferencesFromLocalStorage();
+      }
+    }
+    
+    function loadFromFirebase() {
+      // This would fetch the user's preferences from Firebase
+      // For demo purposes, we'll just use localStorage
+      const preferences = loadFromLocalStorage('aiPreferences');
+      
+      if (!preferences) {
+        // If no preferences exist, set defaults
+        const defaultPreferences = {
+          dataSources: 'all',
+          privacyLevel: 'balanced',
+          similarProductsEnabled: true,
+          refreshRate: 'daily',
+          categories: ['electronics'],
+          lastUpdated: new Date().toISOString()
+        };
+        saveToLocalStorage('aiPreferences', defaultPreferences);
+      }
+    }
+    
+    function saveToFirebase(preferences) {
+      // This would save the user's preferences to Firebase
+      // For demo purposes, we're just using localStorage
+      console.log('Saving preferences to Firebase:', preferences);
+    }
+    
+    // Helper functions for localStorage
+    function saveToLocalStorage(key, data) {
+      try {
+        localStorage.setItem(key, JSON.stringify(data));
+        return true;
+      } catch (e) {
+        console.error('Error saving to localStorage:', e);
+        return false;
+      }
+    }
+    
+    function loadFromLocalStorage(key) {
+      try {
+        const data = localStorage.getItem(key);
+        return data ? JSON.parse(data) : null;
+      } catch (e) {
+        console.error('Error loading from localStorage:', e);
+        return null;
+      }
+    }
+    
+    // Update window.onclick to handle both dialogs
+    window.onclick = function(event) {
+      const customizeDialog = document.getElementById('customizeDialog');
+      const aiPreferencesDialog = document.getElementById('aiPreferencesDialog');
+      
+      if (event.target === customizeDialog) {
+        closeCustomizeDialog();
+      } else if (event.target === aiPreferencesDialog) {
+        closeAIPreferences();
+      }
+    };
+    
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize recommendation engine
+      initFirebaseAIRecommendations();
+      
+      // Load active tab if it exists
+      const activeTab = loadFromLocalStorage('aiActiveTab');
+      if (activeTab) {
+        const tabElement = document.querySelector(`.ai-tab[onclick*="${activeTab}"]`);
+        if (tabElement) {
+          switchRecommendationTab(tabElement, activeTab);
+        }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seller Registration - EchoShop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(to bottom right, #0f172a, #1e3a8a);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .form-container {
+      background-color: #1e293b;
+      padding: 2rem;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #a3e635;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      margin-bottom: 0.3rem;
+      font-weight: bold;
+    }
+    input[type="file"] {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: none;
+      margin-bottom: 1rem;
+      background-color: #f1f5f9;
+      color: #0f172a;
+    }
+    button {
+      width: 100%;
+      padding: 0.8rem;
+      background-color: #22c55e;
+      border: none;
+      border-radius: 8px;
+      color: black;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 1.5rem;
+    }
+    button:hover {
+      background-color: #16a34a;
+    }
+    .note {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: #38bdf8;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Seller Verification</h2>
+    <form>
+      <label for="taxCard">Upload Tax Card</label>
+      <input type="file" id="taxCard" required>
+
+      <label for="commercialRegister">Upload Commercial Register</label>
+      <input type="file" id="commercialRegister" required>
+
+      <button type="submit">Submit for Review</button>
+    </form>
+    <p class="note">Your documents will be reviewed by the admin. You'll be notified once approved.</p>
+  </div>
+</body>
+</html>
